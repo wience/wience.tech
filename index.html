@@ -14,7 +14,7 @@
         body {
             font-family: "Times New Roman", Times, serif;
             font-size: 16px;
-            line-height: 1.6;
+            line-height: 1.4;
             color: #000;
             padding: 40px 20px;
             max-width: 650px;
@@ -23,9 +23,9 @@
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: normal;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             cursor: default;
             user-select: none;
         }
@@ -33,27 +33,27 @@
         .greeting {
             font-size: 14px;
             color: #666;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         h2 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: normal;
-            margin-top: 30px;
-            margin-bottom: 15px;
+            margin-top: 20px;
+            margin-bottom: 8px;
         }
 
         p {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         ul {
-            margin-left: 20px;
-            margin-bottom: 15px;
+            margin-left: 18px;
+            margin-bottom: 10px;
         }
 
         li {
-            margin-bottom: 8px;
+            margin-bottom: 3px;
         }
 
         a {
@@ -66,11 +66,11 @@
         }
 
         .links {
-            margin-top: 30px;
+            margin-top: 20px;
         }
 
         .links a {
-            margin-right: 15px;
+            margin-right: 12px;
         }
 
         /* Cursor trail */
@@ -188,20 +188,20 @@
             let text, bgColor;
 
             if (hour >= 5 && hour < 12) {
-                text = "Good morning";
-                bgColor = "#fffef5"; // warm morning yellow
+                text = "You're up early";
+                bgColor = "#fffef5";
             } else if (hour >= 12 && hour < 17) {
-                text = "Good afternoon";
-                bgColor = "#ffffff"; // neutral white
+                text = "Caught you slacking";
+                bgColor = "#ffffff";
             } else if (hour >= 17 && hour < 21) {
-                text = "Good evening";
-                bgColor = "#fff8f5"; // warm sunset orange tint
+                text = "Still grinding?";
+                bgColor = "#fff8f5";
             } else {
-                text = "Good evening";
-                bgColor = "#f5f7ff"; // cool night blue tint
+                text = "Can't sleep either?";
+                bgColor = "#f5f7ff";
             }
 
-            greeting.textContent = text + " — thanks for stopping by.";
+            greeting.textContent = text;
             document.body.style.backgroundColor = bgColor;
         }
 
