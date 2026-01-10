@@ -58,7 +58,7 @@
 
         a {
             color: #000;
-            text-decoration: underline;
+            text-decoration: none;
         }
 
         a:hover {
@@ -98,7 +98,7 @@
             font-family: monospace;
             font-size: 14px;
             z-index: 10000;
-            text-align: center;
+            text-align: left;
             max-width: 400px;
             line-height: 1.8;
         }
@@ -124,9 +124,11 @@
         }
 
         .close-egg {
-            margin-top: 20px;
+            position: absolute;
+            top: 10px;
+            right: 15px;
             cursor: pointer;
-            text-decoration: underline;
+            font-size: 18px;
         }
 
         @keyframes fadeIn {
@@ -139,7 +141,7 @@
     <h1 id="name">Wince dela Fuente</h1>
     <p class="greeting" id="greeting"></p>
 
-    <h2>What I've done</h2>
+    <h2>What I am</h2>
     <ul>
         <li>Been coding since 12</li>
         <li>Created PWA websites and took commissions at 12th grade, before AI LLMs were even mainstream</li>
@@ -177,12 +179,11 @@
     <!-- Easter egg -->
     <div class="easter-egg-overlay" id="overlay"></div>
     <div class="easter-egg" id="easterEgg">
-        > SYSTEM ACCESS GRANTED<br><br>
-        You found it.<br>
-        Most people don't click twice, let alone five times.<br><br>
-        That curiosity? That's the difference.<br>
-        Now go build something.<br><br>
-        <span class="close-egg" onclick="closeEasterEgg()">[ close ]</span>
+        <span class="close-egg" onclick="closeEasterEgg()">x</span>
+        > CONTACT<br><br>
+        <a href="mailto:delafuentewince@gmail.com" style="color:#fff">delafuentewince@gmail.com</a><br><br>
+        <a href="https://github.com/wience" style="color:#fff">github.com/wience</a><br><br>
+        <a href="https://linkedin.com/in/wince-dela-fuente-61b3a8293" style="color:#fff">linkedin.com/in/wince-dela-fuente</a>
     </div>
 
     <script>
@@ -279,7 +280,7 @@
             document.getElementById('overlay').classList.remove('show');
         }
 
-        document.getElementById('overlay').addEventListener('click', closeEasterEgg);
+        // Only close via X button
     </script>
 </body>
 </html>
