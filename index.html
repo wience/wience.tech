@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wince dela Fuente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #000;
+            padding: 40px 20px;
+            max-width: 650px;
+            margin: 0 auto;
+            transition: background-color 0.5s ease;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: normal;
+            margin-bottom: 5px;
+            cursor: default;
+            user-select: none;
+        }
+
+        .greeting {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: normal;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        a {
+            color: #0000EE;
+            text-decoration: underline;
+        }
+
+        a:hover {
+            color: #551A8B;
+        }
+
+        .links {
+            margin-top: 30px;
+        }
+
+        .links a {
+            margin-right: 15px;
+        }
+
+        /* Cursor trail */
+        .trail {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.15);
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+
+        /* Easter egg modal */
+        .easter-egg {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            color: #fff;
+            padding: 40px;
+            font-family: monospace;
+            font-size: 14px;
+            z-index: 10000;
+            text-align: center;
+            max-width: 400px;
+            line-height: 1.8;
+        }
+
+        .easter-egg.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .easter-egg-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+        }
+
+        .easter-egg-overlay.show {
+            display: block;
+        }
+
+        .close-egg {
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="name">Wince dela Fuente</h1>
+    <p class="greeting" id="greeting"></p>
+
+    <h2>What I've done</h2>
+    <ul>
+        <li>Been coding since 6th grade</li>
+        <li>Built <a href="https://folderly.app">Folderly</a> to 600,000+ users. <a href="https://cs.upcebu.edu.ph/up-cebu-computer-science-students-wins-best-product-at-appcon-2023/">Won Best Product at AppCon 2023.</a></li>
+        <li><a href="https://up.edu.ph/gawad-pangulo-caps-linggo-ng-unibersidad-2025/">Won ₱900K from the President</a> for <a href="https://www.facebook.com/upcebutugani/posts/icymi-project-guia-team-presents-digital-urban-planning-proposal-to-cebu-city-ma/1169206811887608/">Project GUIA</a></li>
+        <li><a href="https://x.com/upcebutugani/status/1914546577647263767">First person in UP Cebu's history</a> to receive the Most Outstanding Innovator award</li>
+        <li>Won 5 hackathons. Lost zero. <a href="https://www.philstar.com/the-freeman/cebu-news/2024/06/09/2361531/cebu-students-hackathon-champs">PhilStar wrote about it.</a> <a href="https://www.apru.org/news/students-across-asia-tackle-digital-challenges-in-apru-x-google-tech-policy-hackathon/">APRU x Google too.</a></li>
+        <li><a href="https://www.philstar.com/the-freeman/cebu-business/2023/12/08/2317374/winzens-cafe-coffee-shop-cause">Coded my way to a coffee shop</a></li>
+        <li>Cut fraud incidents by 30% at NCR Atleos with AI</li>
+        <li>Built an edge AI device that counts birds faster than humans</li>
+        <li><a href="https://www.facebook.com/watch/?v=482113237870332">Esports athlete.</a> Probably better than you at any game.</li>
+    </ul>
+
+    <h2>Unpopular opinions</h2>
+    <ul>
+        <li>Ship it. Your perfect idea is worthless until it's live.</li>
+        <li>A kid from Cebu with a laptop can outbuild a team in Silicon Valley. I'm proving it.</li>
+        <li>Code changes lives. In 6th grade, I coded my way to a national win, <a href="https://www.sunstar.com.ph/more-articles/3-naga-kids-to-represent-cebu-in-robotics-contest-in-russia">represented the Philippines in Russia</a>, and brought my poor family to a country we never thought we'd visit.</li>
+        <li>Talk is cheap. I'd rather show you what I built.</li>
+        <li>While you're planning, I'm shipping.</li>
+        <li>Jack of all trades, master of all — and better than you who's a master of one.</li>
+        <li>If I don't know it, give me 24 hours and a Red Bull. I'll know it like it's my native tongue.</li>
+    </ul>
+
+    <div class="links">
+        <a href="mailto:delafuentewince@gmail.com">Email</a>
+        <a href="https://github.com/wience">GitHub</a>
+        <a href="https://linkedin.com/in/wince-dela-fuente-61b3a8293">LinkedIn</a>
+    </div>
+
+    <!-- Easter egg -->
+    <div class="easter-egg-overlay" id="overlay"></div>
+    <div class="easter-egg" id="easterEgg">
+        > SYSTEM ACCESS GRANTED<br><br>
+        You found it.<br>
+        Most people don't click twice, let alone five times.<br><br>
+        That curiosity? That's the difference.<br>
+        Now go build something.<br><br>
+        <span class="close-egg" onclick="closeEasterEgg()">[ close ]</span>
+    </div>
+
+    <script>
+        // Time-aware greeting and background
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            const greeting = document.getElementById('greeting');
+            let text, bgColor;
+
+            if (hour >= 5 && hour < 12) {
+                text = "Good morning";
+                bgColor = "#fffef5"; // warm morning yellow
+            } else if (hour >= 12 && hour < 17) {
+                text = "Good afternoon";
+                bgColor = "#ffffff"; // neutral white
+            } else if (hour >= 17 && hour < 21) {
+                text = "Good evening";
+                bgColor = "#fff8f5"; // warm sunset orange tint
+            } else {
+                text = "Good evening";
+                bgColor = "#f5f7ff"; // cool night blue tint
+            }
+
+            greeting.textContent = text + " — thanks for stopping by.";
+            document.body.style.backgroundColor = bgColor;
+        }
+
+        updateGreeting();
+
+        // Cursor trail
+        const trailCount = 8;
+        const trails = [];
+
+        for (let i = 0; i < trailCount; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.style.opacity = (1 - i / trailCount) * 0.5;
+            trail.style.width = (6 - i * 0.5) + 'px';
+            trail.style.height = (6 - i * 0.5) + 'px';
+            document.body.appendChild(trail);
+            trails.push({ el: trail, x: 0, y: 0 });
+        }
+
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateTrail() {
+            let x = mouseX, y = mouseY;
+
+            trails.forEach((trail, i) => {
+                const nextX = x;
+                const nextY = y;
+
+                trail.el.style.left = trail.x + 'px';
+                trail.el.style.top = trail.y + 'px';
+
+                x = trail.x;
+                y = trail.y;
+
+                trail.x += (nextX - trail.x) * 0.3;
+                trail.y += (nextY - trail.y) * 0.3;
+            });
+
+            requestAnimationFrame(animateTrail);
+        }
+
+        animateTrail();
+
+        // Easter egg - click name 5 times
+        let clickCount = 0;
+        let clickTimer;
+
+        document.getElementById('name').addEventListener('click', () => {
+            clickCount++;
+            clearTimeout(clickTimer);
+
+            if (clickCount >= 5) {
+                document.getElementById('easterEgg').classList.add('show');
+                document.getElementById('overlay').classList.add('show');
+                clickCount = 0;
+            }
+
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, 2000);
+        });
+
+        function closeEasterEgg() {
+            document.getElementById('easterEgg').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        document.getElementById('overlay').addEventListener('click', closeEasterEgg);
+    </script>
+</body>
+</html>
