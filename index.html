@@ -4,237 +4,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wince Dela Fuente — mobile + AI engineer</title>
-    <meta name="description" content="Co-founded Folderly (1M+ downloads, #1 App Store). Won the Presidential Innovation Award. Building mobile + AI. Open to founding-engineer roles — remote or relocate.">
+    <title>Wince Dela Fuente</title>
+    <meta name="description" content="Co-founded Folderly (1M+ downloads, #1 App Store, 4.9★). Won the Presidential Innovation Award. Building mobile + AI. Open to founding-engineer roles — remote or relocate.">
     <meta property="og:title" content="Wince Dela Fuente">
-    <meta property="og:description" content="Building mobile + AI · open to founding-engineer roles — remote or relocate.">
+    <meta property="og:description" content="building mobile + AI · open to founding-engineer roles — remote or relocate">
+    <meta property="og:image" content="https://wience.tech/og.png">
+    <meta property="og:url" content="https://wience.tech">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Wince Dela Fuente">
+    <meta name="twitter:description" content="building mobile + AI · open to founding-engineer roles — remote or relocate">
+    <meta name="twitter:image" content="https://wience.tech/og.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <style>
-        :root {
-            --bg: #ffffff;
-            --text: #000;
-            --muted: #666;
-            --rule: #e5e5e5;
-            --card-border: #d9d9d9;
-            --card-hover: #000;
-            --accent: #000;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg: #0e0e0e;
-                --text: #ededed;
-                --muted: #999;
-                --rule: #262626;
-                --card-border: #2e2e2e;
-                --card-hover: #ededed;
-                --accent: #ededed;
-            }
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html { -webkit-text-size-adjust: 100%; }
 
         body {
             font-family: "Times New Roman", Times, serif;
-            font-size: 15px;
-            line-height: 1.5;
-            color: var(--text);
-            background: var(--bg);
-            padding: 48px 20px 80px;
-            max-width: 720px;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #000;
+            padding: 40px 20px;
+            max-width: 650px;
             margin: 0 auto;
             transition: background-color 0.5s ease;
         }
 
-        /* SANS for stat numbers + section labels */
-        .sans, .stat-num, .section-label, .card-meta, .stat-label, .nav, .pill {
-            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
-            font-feature-settings: "ss01", "cv11";
-        }
-
         h1 {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: normal;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             cursor: default;
             user-select: none;
-            letter-spacing: -0.01em;
         }
 
-        .tagline {
-            font-size: 13px;
-            color: var(--muted);
-            margin-bottom: 24px;
+        .greeting {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .links {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .links a {
+            margin-right: 8px;
         }
 
         h2 {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--muted);
-            margin: 36px 0 14px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--rule);
+            font-size: 14px;
+            font-weight: normal;
+            margin-top: 20px;
+            margin-bottom: 8px;
         }
 
-        p { margin-bottom: 12px; }
+        ul ul {
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
 
-        ul { margin-left: 18px; margin-bottom: 14px; }
-        ul ul { margin-top: 4px; margin-bottom: 4px; }
-        li { margin-bottom: 4px; }
+        p {
+            margin-bottom: 10px;
+        }
+
+        ul {
+            margin-left: 18px;
+            margin-bottom: 10px;
+        }
+
+        li {
+            margin-bottom: 3px;
+        }
 
         a {
-            color: var(--text);
+            color: #000;
             text-decoration: underline;
             text-underline-offset: 2px;
-            text-decoration-thickness: 1px;
-        }
-        a:hover { color: var(--muted); }
-
-        /* STATS GRID */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-            margin: 18px 0 22px;
-        }
-        @media (min-width: 600px) {
-            .stats { grid-template-columns: repeat(4, 1fr); }
-        }
-        .stat {
-            border: 1px solid var(--rule);
-            padding: 12px 14px;
-            border-radius: 2px;
-        }
-        .stat-num {
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-            line-height: 1.15;
-            margin-bottom: 2px;
-        }
-        .stat-label {
-            font-size: 11px;
-            color: var(--muted);
-            line-height: 1.3;
         }
 
-        /* CTAS */
-        .ctas {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        .pill {
-            display: inline-block;
-            padding: 5px 11px;
-            border: 1px solid var(--card-border);
-            border-radius: 999px;
-            font-size: 12px;
-            text-decoration: none;
-            color: var(--text);
-            transition: border-color 0.15s ease, color 0.15s ease;
-        }
-        .pill:hover {
-            border-color: var(--card-hover);
-            color: var(--text);
-        }
-        .open-to {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 6px;
-            font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+        a:hover {
+            color: #666;
         }
 
-        /* WORK CARDS */
-        .work-card {
-            border-top: 1px solid var(--rule);
-            padding: 16px 0;
-        }
-        .work-card:first-of-type { border-top: 0; padding-top: 6px; }
-        .card-title {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 2px;
-            font-family: "Times New Roman", Times, serif;
-        }
-        .card-title a { text-decoration: none; }
-        .card-title a:hover { text-decoration: underline; }
-        .card-meta {
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-        }
-        .card-body { font-size: 14px; }
-        .card-outcome {
-            font-size: 13px;
-            margin-top: 6px;
-            font-style: italic;
-            color: var(--text);
-        }
-
-        /* COMPACT STRIP */
-        .compact {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px;
-        }
-        @media (min-width: 600px) {
-            .compact { grid-template-columns: 1fr 1fr; }
-        }
-        .compact .item {
-            border: 1px solid var(--card-border);
-            border-radius: 2px;
-            padding: 12px 14px;
-            transition: border-color 0.15s ease;
-        }
-        .compact .item:hover { border-color: var(--card-hover); }
-        .compact .item-title {
-            font-weight: 600;
-            font-size: 13px;
-            margin-bottom: 4px;
-        }
-        .compact .item-body {
-            font-size: 12.5px;
-            color: var(--text);
-            line-height: 1.4;
-        }
-
-        /* SKILLS */
-        .skills .skill-row {
-            display: grid;
-            grid-template-columns: 110px 1fr;
-            gap: 14px;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--rule);
-            font-size: 13px;
-        }
-        .skills .skill-row:last-child { border-bottom: 0; }
-        .skill-label {
-            font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--muted);
-            padding-top: 1px;
-        }
-
-        /* FOOTER */
-        footer {
-            margin-top: 48px;
-            padding-top: 20px;
-            border-top: 1px solid var(--rule);
-            font-size: 13px;
-            color: var(--muted);
-        }
-        footer a { color: var(--text); margin-right: 14px; display: inline-block; margin-bottom: 4px; }
-
-        /* CURSOR TRAIL */
+        /* Cursor trail */
         .trail {
             position: fixed;
             width: 6px;
@@ -245,14 +106,8 @@
             z-index: 9999;
             transition: transform 0.1s ease;
         }
-        @media (prefers-color-scheme: dark) {
-            .trail { background: rgba(255, 255, 255, 0.18); }
-        }
-        @media (max-width: 600px), (pointer: coarse) {
-            .trail { display: none; }
-        }
 
-        /* EASTER EGG */
+        /* Easter egg modal */
         .easter-egg {
             display: none;
             position: fixed;
@@ -268,256 +123,223 @@
             text-align: left;
             max-width: 400px;
             line-height: 1.8;
-            border-radius: 4px;
         }
-        .easter-egg.show { display: block; animation: fadeIn 0.3s ease; }
+
+        .easter-egg.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
         .easter-egg-overlay {
             display: none;
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(255, 255, 255, 0.9);
             z-index: 9999;
         }
-        @media (prefers-color-scheme: dark) {
-            .easter-egg-overlay { background: rgba(0,0,0,0.85); }
+
+        .easter-egg-overlay.show {
+            display: block;
         }
-        .easter-egg-overlay.show { display: block; }
+
         .close-egg {
             position: absolute;
-            top: 10px; right: 15px;
+            top: 10px;
+            right: 15px;
             cursor: pointer;
             font-size: 18px;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
-            to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
     </style>
 </head>
 
 <body>
+    <h1 id="name">Wince Dela Fuente</h1>
+    <p class="greeting" id="greeting"></p>
+    <p class="links">
+        <a href="mailto:delafuentewince@gmail.com">email</a>
+        <a href="https://github.com/wience">github</a>
+        <a href="/resume.pdf">CV</a>
+        <a href="https://linkedin.com/in/wince-dela-fuente-61b3a8293">linkedin</a>
+    </p>
 
-    <!-- HERO -->
-    <header>
-        <h1 id="name">Wince Dela Fuente</h1>
-        <p class="tagline" id="greeting"></p>
-
-        <div class="stats" aria-label="proof points">
-            <div class="stat">
-                <div class="stat-num">1M+</div>
-                <div class="stat-label">app downloads · #1 App Store · 4.9★</div>
-            </div>
-            <div class="stat">
-                <div class="stat-num">₱900K</div>
-                <div class="stat-label">Presidential Innovation Award</div>
-            </div>
-            <div class="stat">
-                <div class="stat-num">−30%</div>
-                <div class="stat-label">fraud incidents at NCR Atleos</div>
-            </div>
-            <div class="stat">
-                <div class="stat-num">Agents · RAG</div>
-                <div class="stat-label">shipped to production</div>
-            </div>
-        </div>
-
-        <div class="ctas">
-            <a class="pill" href="mailto:delafuentewince@gmail.com">Email</a>
-            <a class="pill" href="https://github.com/wience" target="_blank" rel="noopener">GitHub</a>
-            <a class="pill" href="/resume.pdf" target="_blank" rel="noopener">CV</a>
-            <a class="pill" href="https://linkedin.com/in/wince-dela-fuente-61b3a8293" target="_blank" rel="noopener">LinkedIn</a>
-        </div>
-        <p class="open-to">Open to founding-engineer / AI roles — remote or relocate.</p>
-    </header>
-
-    <!-- SELECTED WORK -->
-    <h2>Selected Work</h2>
-
-    <div class="work-card">
-        <div class="card-title"><a href="https://folderly.top/" target="_blank" rel="noopener">Folderly →</a></div>
-        <div class="card-meta">Co-founder & product engineer · React Native · Expo · Supabase · PowerSync</div>
-        <div class="card-body">
-            Cross-platform productivity app I built and scaled from zero. Owned every decision — architecture, App Store positioning, customer support, the PowerSync migration that gave us offline-first real-time sync across iOS, Android, and native home-screen widgets.
-        </div>
-        <div class="card-outcome">1M+ downloads · #1 Top Free + #1 Top Productivity on the App Store · 4.9★ · 20k reviews.</div>
-    </div>
-
-    <div class="work-card">
-        <div class="card-title"><a href="https://creatorly.co/" target="_blank" rel="noopener">Creatorly →</a></div>
-        <div class="card-meta">AI agent · TypeScript · LLM tool-calling · attribution pipeline</div>
-        <div class="card-body">
-            AI agent that runs influencer and ad negotiations end-to-end and tracks revenue per creator through a closed-loop attribution pipeline. Replaces the human in the loop for outreach, negotiation, and ROI tracking.
-        </div>
-        <div class="card-outcome">Cut customer acquisition cost by 73%.</div>
-    </div>
-
-    <div class="work-card">
-        <div class="card-title"><a href="https://agent-zer0.vercel.app/" target="_blank" rel="noopener">Agent Zer0 →</a></div>
-        <div class="card-meta">Multimodal LLM agent · tool-calling · multi-step workflows · live demo</div>
-        <div class="card-body">
-            Autonomous multimodal agent for SMB support workflows. Calls tools, runs multi-step plans against CRM and knowledge bases, and recovers gracefully when an external API breaks mid-flow.
-        </div>
-    </div>
-
-    <div class="work-card">
-        <div class="card-title">Project GUIA</div>
-        <div class="card-meta">AI infrastructure planning · TypeScript · climate + hazard data</div>
-        <div class="card-body">
-            AI platform that fuses real-time climate, hazard, and zoning data so government agencies can make better infrastructure decisions. Built with the team I led at <a href="https://www.facebook.com/upcebutugani/posts/icymi-project-guia-team-presents-digital-urban-planning-proposal-to-cebu-city-ma/1169206811887608/" target="_blank" rel="noopener">UP Cebu</a>.
-        </div>
-        <div class="card-outcome">Won the <a href="https://up.edu.ph/gawad-pangulo-caps-linggo-ng-unibersidad-2025/" target="_blank" rel="noopener">Presidential Innovation Award</a> · ₱900K prize.</div>
-    </div>
-
-    <!-- COMPACT STRIP -->
-    <h2>More</h2>
-    <div class="compact">
-        <div class="item">
-            <div class="item-title">Seam — AI knowledge graphs</div>
-            <div class="item-body">Production pipeline that ingests books, extracts semantic structure via LLMs, and renders navigable knowledge graphs. Built cross-service observability (SigNoz + OpenTelemetry) into a shared workspace package.</div>
-        </div>
-        <div class="item">
-            <div class="item-title"><a href="https://www.linkedin.com/in/wince-dela-fuente-61b3a8293/overlay/experience/2419471599/multiple-media-viewer/?profileId=ACoAAEcSN3cBm0bvZ4IgbJ-e8ZhUHqEzlA0w4IQ&treasuryMediaId=1745463651965" target="_blank" rel="noopener">Azeus — 5-stage RAG</a></div>
-            <div class="item-body">Conversational AI agent over a domain-specific knowledge base. LangChain + LangGraph orchestration, Chroma vector DB, 5-stage retrieval pipeline.</div>
-        </div>
-        <div class="item">
-            <div class="item-title"><a href="https://www.linkedin.com/in/wince-dela-fuente-61b3a8293/overlay/experience/2295779678/multiple-media-viewer/?profileId=ACoAAEcSN3cBm0bvZ4IgbJ-e8ZhUHqEzlA0w4IQ&treasuryMediaId=1718087612907" target="_blank" rel="noopener">NCR Atleos — fraud detection</a></div>
-            <div class="item-body">Led the intern team that shipped an AI fraud-detection system to production. Cut flagged incidents by 30%. Presented to the VP and Dundee staff.</div>
-        </div>
-        <div class="item">
-            <div class="item-title">Edge-AI bird counter</div>
-            <div class="item-body">Edge device that counts birds more accurately than humans, costs 80% less than the commercial option, runs 24/7 with zero downtime.</div>
-        </div>
-        <div class="item">
-            <div class="item-title"><a href="https://github.com/wience/bytecode-vm" target="_blank" rel="noopener">Bytecode VM in C</a></div>
-            <div class="item-body">Bytecode interpreter from scratch with recursion and garbage collection. Outperformed Python 2.7 on standard benchmarks.</div>
-        </div>
-        <div class="item">
-            <div class="item-title"><a href="https://github.com/wience/hive" target="_blank" rel="noopener">Hive</a></div>
-            <div class="item-body">Outcome-driven agent development framework — agents that evolve based on what worked, not fixed prompts.</div>
-        </div>
-    </div>
-
-    <!-- SKILLS -->
-    <h2>Stack</h2>
-    <div class="skills">
-        <div class="skill-row"><div class="skill-label">Mobile</div><div>React Native · Expo · Swift · Kotlin · offline-first sync · home-screen widgets</div></div>
-        <div class="skill-row"><div class="skill-label">AI / LLM</div><div>Agent orchestration · RAG · LangChain · LangGraph · evals · vector search · tool-calling</div></div>
-        <div class="skill-row"><div class="skill-label">Full-stack</div><div>TypeScript · Python · Next.js · Node · NestJS · FastAPI</div></div>
-        <div class="skill-row"><div class="skill-label">Data / Infra</div><div>Postgres · Supabase · AWS · Docker · CI/CD · OpenTelemetry · SigNoz</div></div>
-    </div>
-
-    <!-- HOW I GOT HERE -->
-    <h2>How I got here</h2>
     <ul>
-        <li>Been coding since 12. Took PWA commissions in 12th grade, before AI LLMs were even mainstream.</li>
-        <li>6th grade: coded my way to a national win, represented the Philippines in <a href="https://www.sunstar.com.ph/more-articles/3-naga-kids-to-represent-cebu-in-robotics-contest-in-russia" target="_blank" rel="noopener">Russia</a>, brought my poor family to a country we never thought we'd visit.</li>
-        <li>Co-founded <a href="https://folderly.top/" target="_blank" rel="noopener">Folderly</a> — our software engineering group project that went viral. 1M+ downloads, 20k reviews, 4.9★. Reached #1 Top Free and #1 Top Productivity on the App Store.</li>
-        <li>Won ₱900K from the <a href="https://up.edu.ph/gawad-pangulo-caps-linggo-ng-unibersidad-2025/" target="_blank" rel="noopener">President</a> for <a href="https://www.facebook.com/upcebutugani/posts/icymi-project-guia-team-presents-digital-urban-planning-proposal-to-cebu-city-ma/1169206811887608/" target="_blank" rel="noopener">Project GUIA</a>.</li>
-        <li><a href="https://x.com/upcebutugani/status/1914546577647263767" target="_blank" rel="noopener">First</a> student in UP Cebu's history to receive the Most Outstanding Innovator award.</li>
-        <li>Won lots of <a href="https://www.philstar.com/the-freeman/cebu-news/2024/06/09/2361531/cebu-students-hackathon-champs" target="_blank" rel="noopener">hackathons</a>. APRU x <a href="https://www.apru.org/news/students-across-asia-tackle-digital-challenges-in-apru-x-google-tech-policy-hackathon/" target="_blank" rel="noopener">Google</a> wrote about it.</li>
-        <li>Coded my way to a <a href="https://www.philstar.com/the-freeman/cebu-business/2023/12/08/2317374/winzens-cafe-coffee-shop-cause" target="_blank" rel="noopener">coffee shop</a>.</li>
-        <li>Former <a href="https://www.facebook.com/watch/?v=482113237870332" target="_blank" rel="noopener">esports</a> athlete. Too many sidequests in life to count.</li>
+        <li>Been coding since 12</li>
+        <li>Created PWA websites and took commissions at 12th grade, before AI LLMs were even mainstream</li>
+        <li>Co-founded <a href="http://folderly.top/">Folderly</a>, our software engineering group project that went
+            viral
+            <ul>
+                <li>1M+ downloads, 20k reviews, 4.9 stars</li>
+                <li>Reached #1 in Top Free Charts in App Store</li>
+                <li>Reached #1 in Top Productivity Charts in App Store</li>
+                <li>Won <a href="http://folderly.top/">awards</a></li>
+                <li>React Native, Expo, Supabase, PowerSync. Offline-first real-time sync across iOS, Android, and home-screen widgets.</li>
+            </ul>
+        </li>
+        <li>Built <a href="https://creatorly.co/">Creatorly</a>, an AI agent that runs influencer and ad negotiations end-to-end and tracks revenue per creator. Cut customer acquisition cost by 73%.</li>
+        <li>Built <a href="https://agent-zer0.vercel.app/">Agent Zer0</a>, an autonomous multimodal LLM agent for SMB support workflows. Tool-calling, multi-step plans, graceful failure recovery.</li>
+        <li>Built the AI knowledge-graph pipeline at Seam — ingests long-form text via LLMs and renders navigable graphs. Set up cross-service observability from scratch with SigNoz and OpenTelemetry.</li>
+        <li>Built <a href="https://github.com/wience/hive">Hive</a>, an outcome-driven agent development framework. Agents that evolve based on what worked, not fixed prompts.</li>
+        <li>Won ₱900K from the <a href="https://up.edu.ph/gawad-pangulo-caps-linggo-ng-unibersidad-2025/">President</a>
+            for Project <a
+                href="https://www.facebook.com/upcebutugani/posts/icymi-project-guia-team-presents-digital-urban-planning-proposal-to-cebu-city-ma/1169206811887608/">GUIA</a>
+        </li>
+        <li><a href="https://x.com/upcebutugani/status/1914546577647263767">First</a> student in UP Cebu's
+            history to
+            receive the Most Outstanding Innovator award</li>
+        <li>Won lots of <a
+                href="https://www.philstar.com/the-freeman/cebu-news/2024/06/09/2361531/cebu-students-hackathon-champs">hackathons</a>.
+            APRU x <a
+                href="https://www.apru.org/news/students-across-asia-tackle-digital-challenges-in-apru-x-google-tech-policy-hackathon/">Google</a>
+            wrote about it.</li>
+        <li>Coded my way to a <a
+                href="https://www.philstar.com/the-freeman/cebu-business/2023/12/08/2317374/winzens-cafe-coffee-shop-cause">coffee
+                shop</a></li>
+        <li>Cut fraud incidents by 30% at NCR <a
+                href="https://www.linkedin.com/in/wince-dela-fuente-61b3a8293/overlay/experience/2295779678/multiple-media-viewer/?profileId=ACoAAEcSN3cBm0bvZ4IgbJ-e8ZhUHqEzlA0w4IQ&treasuryMediaId=1718087612907">Atleos</a>
+            by implementing AI-driven detection systems</li>
+        <li>Built RAG systems at <a
+                href="https://www.linkedin.com/in/wince-dela-fuente-61b3a8293/overlay/experience/2419471599/multiple-media-viewer/?profileId=ACoAAEcSN3cBm0bvZ4IgbJ-e8ZhUHqEzlA0w4IQ&treasuryMediaId=1745463651965">Azeus</a>
+        </li>
+        <li>Built a <a href="https://github.com/wience/bytecode-vm">bytecode VM in C</a> from scratch with garbage collection. Outperformed Python 2.7 on standard benchmarks.</li>
+        <li>Built an edge AI device that counts birds more accurately than humans, costs 80% less, and runs 24/7 with
+            zero downtime
+        </li>
+        <li>Former <a href="https://www.facebook.com/watch/?v=482113237870332">Esports</a> athlete. </li>
+        <li>Too many sidequests in life to count</li>
         <li>Has an amazing, caring model girlfriend. Winning in life.</li>
     </ul>
 
-    <!-- UNPOPULAR OPINIONS -->
     <h2>Unpopular opinions</h2>
     <ul>
         <li>Go to college to network, not study.</li>
         <li>A kid from Cebu with a laptop can outbuild a team in Silicon Valley. We're proving it.</li>
-        <li>Code changes lives. In 6th grade I coded my way to a national win, represented the Philippines in Russia, and brought my poor family to a country we never thought we'd visit.</li>
+        <li>Code changes lives. In 6th grade, I coded my way to a national win, represented the Philippines in <a
+                href="https://www.sunstar.com.ph/more-articles/3-naga-kids-to-represent-cebu-in-robotics-contest-in-russia">Russia</a>,
+            and brought my poor family to a country we never thought we'd visit.</li>
         <li>Ideas are cheap. Execution is everything.</li>
         <li>You can absolutely be a jack of all trades and master of all.</li>
         <li>If I don't know it, give me 24 hours and a Red Bull. I'll know it like it's my native tongue.</li>
         <li>Every skill you don't have is just an opportunity you haven't taken yet.</li>
     </ul>
 
-    <!-- FOOTER -->
-    <footer>
-        <a href="mailto:delafuentewince@gmail.com">delafuentewince@gmail.com</a>
-        <a href="https://github.com/wience" target="_blank" rel="noopener">github</a>
-        <a href="https://linkedin.com/in/wince-dela-fuente-61b3a8293" target="_blank" rel="noopener">linkedin</a>
-        <a href="https://wience.tech" >wience.tech</a>
-    </footer>
 
-    <!-- Easter egg (click name 5x) -->
+    <!-- Easter egg -->
     <div class="easter-egg-overlay" id="overlay"></div>
     <div class="easter-egg" id="easterEgg">
         <span class="close-egg" onclick="closeEasterEgg()">x</span>
-        &gt; CONTACT<br><br>
+        > CONTACT<br><br>
         <a href="mailto:delafuentewince@gmail.com" style="color:#fff">delafuentewince@gmail.com</a><br><br>
         <a href="https://github.com/wience" style="color:#fff">github.com/wience</a><br><br>
-        <a href="https://linkedin.com/in/wince-dela-fuente-61b3a8293" style="color:#fff">linkedin.com/in/wince-dela-fuente</a>
+        <a href="https://linkedin.com/in/wince-dela-fuente-61b3a8293"
+            style="color:#fff">linkedin.com/in/wince-dela-fuente</a>
     </div>
 
     <script>
-        // Time-aware tagline + subtle background tint (light mode only)
-        (function () {
+        // Time-aware greeting and background
+        function updateGreeting() {
+            const hour = new Date().getHours();
             const greeting = document.getElementById('greeting');
-            greeting.textContent = "building mobile + AI · open to founding-engineer roles — remote or relocate";
-
-            const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (!isDark) {
-                const hour = new Date().getHours();
-                let bg = "#ffffff";
-                if (hour >= 5 && hour < 12)       bg = "#fffef5";
-                else if (hour >= 12 && hour < 17) bg = "#ffffff";
-                else if (hour >= 17 && hour < 21) bg = "#fff8f5";
-                else                              bg = "#f5f7ff";
-                document.body.style.backgroundColor = bg;
+            let text, bgColor;
+            text = "building mobile + AI · open to founding-engineer roles — remote or relocate";
+            if (hour >= 5 && hour < 12) {
+                bgColor = "#fffef5";
+            } else if (hour >= 12 && hour < 17) {
+                bgColor = "#ffffff";
+            } else if (hour >= 17 && hour < 21) {
+                bgColor = "#fff8f5";
+            } else {
+                bgColor = "#f5f7ff";
             }
-        })();
 
-        // Cursor trail (desktop only — CSS hides on mobile/touch)
-        (function () {
-            const trailCount = 8;
-            const trails = [];
-            for (let i = 0; i < trailCount; i++) {
-                const t = document.createElement('div');
-                t.className = 'trail';
-                t.style.opacity = (1 - i / trailCount) * 0.5;
-                t.style.width  = (6 - i * 0.5) + 'px';
-                t.style.height = (6 - i * 0.5) + 'px';
-                document.body.appendChild(t);
-                trails.push({ el: t, x: 0, y: 0 });
-            }
-            let mouseX = 0, mouseY = 0;
-            document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-            function animate() {
-                let x = mouseX, y = mouseY;
-                trails.forEach((trail) => {
-                    const nx = x, ny = y;
-                    trail.el.style.left = trail.x + 'px';
-                    trail.el.style.top  = trail.y + 'px';
-                    x = trail.x; y = trail.y;
-                    trail.x += (nx - trail.x) * 0.3;
-                    trail.y += (ny - trail.y) * 0.3;
-                });
-                requestAnimationFrame(animate);
-            }
-            animate();
-        })();
+            greeting.textContent = text;
+            document.body.style.backgroundColor = bgColor;
+        }
 
-        // Easter egg — click name 5 times
-        (function () {
-            let clickCount = 0;
-            let clickTimer;
-            document.getElementById('name').addEventListener('click', () => {
-                clickCount++;
-                clearTimeout(clickTimer);
-                if (clickCount >= 5) {
-                    document.getElementById('easterEgg').classList.add('show');
-                    document.getElementById('overlay').classList.add('show');
-                    clickCount = 0;
-                }
-                clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
+        updateGreeting();
+
+        // Cursor trail
+        const trailCount = 8;
+        const trails = [];
+
+        for (let i = 0; i < trailCount; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.style.opacity = (1 - i / trailCount) * 0.5;
+            trail.style.width = (6 - i * 0.5) + 'px';
+            trail.style.height = (6 - i * 0.5) + 'px';
+            document.body.appendChild(trail);
+            trails.push({ el: trail, x: 0, y: 0 });
+        }
+
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateTrail() {
+            let x = mouseX, y = mouseY;
+
+            trails.forEach((trail, i) => {
+                const nextX = x;
+                const nextY = y;
+
+                trail.el.style.left = trail.x + 'px';
+                trail.el.style.top = trail.y + 'px';
+
+                x = trail.x;
+                y = trail.y;
+
+                trail.x += (nextX - trail.x) * 0.3;
+                trail.y += (nextY - trail.y) * 0.3;
             });
-        })();
+
+            requestAnimationFrame(animateTrail);
+        }
+
+        animateTrail();
+
+        // Easter egg - click name 5 times
+        let clickCount = 0;
+        let clickTimer;
+
+        document.getElementById('name').addEventListener('click', () => {
+            clickCount++;
+            clearTimeout(clickTimer);
+
+            if (clickCount >= 5) {
+                document.getElementById('easterEgg').classList.add('show');
+                document.getElementById('overlay').classList.add('show');
+                clickCount = 0;
+            }
+
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, 2000);
+        });
 
         function closeEasterEgg() {
             document.getElementById('easterEgg').classList.remove('show');
             document.getElementById('overlay').classList.remove('show');
         }
+
+        // Only close via X button
     </script>
 </body>
 
