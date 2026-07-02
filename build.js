@@ -178,6 +178,13 @@ for (const entry of fs.readdirSync(ROOT, { withFileTypes: true })) {
     }
 }
 
+// editor page
+const writeDir = path.join(ROOT, 'write');
+if (fs.existsSync(writeDir)) fs.cpSync(writeDir, path.join(OUT, 'write'), {
+    recursive: true,
+    filter: (src) => !src.endsWith('.md'),
+});
+
 // post images
 const imagesDir = path.join(POSTS, 'images');
 if (fs.existsSync(imagesDir)) fs.cpSync(imagesDir, path.join(OUT, 'blog', 'images'), {

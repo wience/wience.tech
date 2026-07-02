@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>write</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #000;
+            padding: 40px 20px 60px;
+            max-width: 650px;
+            margin: 0 auto;
+            transition: background-color 0.5s ease;
+        }
+
+        .crumb { font-size: 13px; color: #666; margin-bottom: 30px; }
+        .crumb a { color: #666; }
+
+        a { color: #000; text-decoration: underline; text-underline-offset: 2px; }
+        a:hover { color: #666; }
+
+        input, textarea {
+            font-family: inherit;
+            font-size: 16px;
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            background: transparent;
+            padding: 6px 0;
+            margin-bottom: 14px;
+            outline: none;
+        }
+
+        input:focus, textarea:focus { border-color: #999; }
+
+        #title { font-size: 24px; }
+        #slug, #description { font-size: 13px; color: #666; }
+
+        textarea {
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 12px;
+            min-height: 320px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .bar { font-size: 13px; color: #666; margin-bottom: 20px; }
+        .bar button, .bar label {
+            font-family: inherit;
+            font-size: 13px;
+            background: none;
+            border: none;
+            color: #000;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            cursor: pointer;
+            margin-right: 12px;
+            padding: 0;
+        }
+        .bar button:hover, .bar label:hover { color: #666; }
+        #status { font-style: italic; }
+
+        #postList { font-size: 13px; color: #666; margin-bottom: 20px; }
+        #postList a { margin-right: 10px; color: #666; }
+
+        h2.section { font-size: 14px; font-weight: normal; color: #666; margin: 30px 0 10px; border-top: 1px solid #eee; padding-top: 12px; }
+
+        /* preview: mirror the blog's post styles */
+        #preview h1 { font-size: 24px; font-weight: normal; margin-bottom: 4px; }
+        #preview h2 { font-size: 18px; font-weight: normal; margin-top: 28px; margin-bottom: 10px; }
+        #preview h3 { font-size: 16px; font-weight: bold; margin-top: 24px; margin-bottom: 8px; }
+        #preview p { margin-bottom: 14px; }
+        #preview ul, #preview ol { margin-left: 22px; margin-bottom: 14px; }
+        #preview li { margin-bottom: 4px; }
+        #preview figure { margin: 28px 0; }
+        #preview figure img { display: block; width: 100%; border-radius: 3px; }
+        #preview figcaption { font-size: 13px; color: #666; font-style: italic; text-align: center; margin-top: 8px; }
+        #preview blockquote { border-left: 2px solid #ccc; padding-left: 14px; color: #444; font-style: italic; margin-bottom: 14px; }
+        #preview code { font-family: monospace; font-size: 13px; background: rgba(0, 0, 0, 0.05); padding: 1px 4px; border-radius: 3px; }
+        #preview pre { background: rgba(0, 0, 0, 0.04); padding: 14px; border-radius: 3px; overflow-x: auto; margin-bottom: 14px; line-height: 1.5; }
+        #preview pre code { background: none; padding: 0; }
+        #preview hr { border: none; border-top: 1px solid #ddd; width: 100px; margin: 30px auto; }
+    </style>
+</head>
+
+<body>
+    <p class="crumb"><a href="/">wience.tech</a> · <a href="/blog/">writing</a> · editor</p>
+
+    <div id="postList"></div>
+
+    <input id="title" placeholder="Title" autocomplete="off">
+    <input id="slug" placeholder="slug (auto from title)" autocomplete="off" spellcheck="false">
+    <input id="description" placeholder="One-line description (optional)" autocomplete="off">
+    <textarea id="body" placeholder="Write in markdown. Images: use “insert image” below."></textarea>
+
+    <p class="bar">
+        <button id="publish">publish</button>
+        <label for="imageFile">insert image</label>
+        <input type="file" id="imageFile" accept="image/*" style="display:none">
+        <button id="newPost">new</button>
+        <button id="setToken">token</button>
+        <span id="status"></span>
+    </p>
+
+    <h2 class="section">preview</h2>
+    <div id="preview"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+    <script>
+        const REPO = 'wience/wience.tech';
+        const API = `https://api.github.com/repos/${REPO}/contents/`;
+        const $ = (id) => document.getElementById(id);
+
+        // same time-aware background as the rest of the site
+        const hour = new Date().getHours();
+        document.body.style.backgroundColor =
+            hour >= 5 && hour < 12 ? "#fffef5" :
+            hour >= 12 && hour < 17 ? "#ffffff" :
+            hour >= 17 && hour < 21 ? "#fff8f5" : "#f5f7ff";
+
+        // same figure rendering as build.js so the preview matches the real post
+        marked.use({
+            renderer: {
+                image(token) {
+                    const src = token.href.startsWith('images/') ? '/blog/' + token.href : token.href;
+                    const cap = token.text ? `<figcaption>${token.text}</figcaption>` : '';
+                    return `<figure><img src="${src}" alt="${token.text || ''}">${cap}</figure>`;
+                }
+            }
+        });
+
+        // --- token ---
+        const getToken = () => localStorage.getItem('gh_token') || '';
+        $('setToken').onclick = () => {
+            const t = prompt('Fine-grained GitHub token with Contents read/write on wience/wience.tech:', getToken());
+            if (t !== null) { localStorage.setItem('gh_token', t.trim()); loadPostList(); }
+        };
+        const headers = () => ({
+            'Authorization': 'Bearer ' + getToken(),
+            'Accept': 'application/vnd.github+json',
+        });
+
+        // --- helpers ---
+        const status = (msg) => { $('status').textContent = msg; };
+        const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const b64encode = (str) => {
+            const bytes = new TextEncoder().encode(str);
+            let bin = '';
+            bytes.forEach((b) => bin += String.fromCharCode(b));
+            return btoa(bin);
+        };
+        const b64decode = (b64) => {
+            const bin = atob(b64.replace(/\n/g, ''));
+            return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
+        };
+
+        let slugTouched = false;
+        let loadedDate = ''; // preserve original date when editing
+        $('slug').addEventListener('input', () => { slugTouched = true; });
+        $('title').addEventListener('input', () => {
+            if (!slugTouched) $('slug').value = slugify($('title').value);
+        });
+
+        // --- live preview + draft autosave ---
+        function refresh() {
+            $('preview').innerHTML = marked.parse($('body').value);
+            localStorage.setItem('draft', JSON.stringify({
+                title: $('title').value, slug: $('slug').value,
+                description: $('description').value, body: $('body').value,
+            }));
+        }
+        ['title', 'slug', 'description', 'body'].forEach((id) => $(id).addEventListener('input', refresh));
+
+        const draft = JSON.parse(localStorage.getItem('draft') || 'null');
+        if (draft) {
+            $('title').value = draft.title; $('slug').value = draft.slug;
+            $('description').value = draft.description; $('body').value = draft.body;
+            slugTouched = !!draft.slug;
+            refresh();
+        }
+
+        // --- github contents api ---
+        async function getSha(path) {
+            const res = await fetch(API + path, { headers: headers() });
+            return res.ok ? (await res.json()).sha : null;
+        }
+
+        async function putFile(path, contentB64, message) {
+            const sha = await getSha(path);
+            const res = await fetch(API + path, {
+                method: 'PUT',
+                headers: headers(),
+                body: JSON.stringify({ message, content: contentB64, ...(sha && { sha }) }),
+            });
+            if (!res.ok) throw new Error(`${res.status}: ${(await res.json()).message}`);
+            return sha ? 'updated' : 'created';
+        }
+
+        // --- publish ---
+        $('publish').onclick = async () => {
+            const title = $('title').value.trim();
+            const slug = $('slug').value.trim();
+            if (!title || !slug) return status('need a title');
+            if (!getToken()) return $('setToken').click();
+            const date = loadedDate || new Date().toISOString().slice(0, 10);
+            const desc = $('description').value.trim();
+            const md = `---\ntitle: ${title}\ndate: ${date}\n${desc ? `description: ${desc}\n` : ''}---\n\n${$('body').value.trim()}\n`;
+            status('publishing…');
+            try {
+                const verb = await putFile(`posts/${slug}.md`, b64encode(md), `Post: ${title}`);
+                status(`${verb} — deploying, live at /blog/${slug}/ in ~1 min`);
+                loadPostList();
+            } catch (e) { status('failed — ' + e.message); }
+        };
+
+        // --- image upload ---
+        $('imageFile').addEventListener('change', async () => {
+            const file = $('imageFile').files[0];
+            if (!file) return;
+            if (!getToken()) return $('setToken').click();
+            const name = slugify(file.name.replace(/\.[^.]+$/, '')) + file.name.match(/\.[^.]+$/)[0].toLowerCase();
+            status('uploading image…');
+            const reader = new FileReader();
+            reader.onload = async () => {
+                try {
+                    await putFile(`posts/images/${name}`, reader.result.split(',')[1], `Image: ${name}`);
+                    const box = $('body');
+                    const at = box.selectionStart;
+                    box.value = box.value.slice(0, at) + `\n![caption here](images/${name})\n` + box.value.slice(at);
+                    refresh();
+                    status(`image added (preview shows it after deploy)`);
+                } catch (e) { status('image failed — ' + e.message); }
+            };
+            reader.readAsDataURL(file);
+            $('imageFile').value = '';
+        });
+
+        // --- load & edit existing posts ---
+        async function loadPost(name) {
+            status('loading…');
+            const res = await fetch(API + 'posts/' + name, { headers: headers() });
+            if (!res.ok) return status('load failed');
+            const md = b64decode((await res.json()).content);
+            const m = md.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+            const meta = {};
+            if (m) for (const line of m[1].split('\n')) {
+                const i = line.indexOf(':');
+                if (i > 0) meta[line.slice(0, i).trim()] = line.slice(i + 1).trim();
+            }
+            $('title').value = meta.title || '';
+            $('slug').value = name.replace(/\.md$/, '');
+            $('description').value = meta.description || '';
+            $('body').value = (m ? m[2] : md).trim();
+            slugTouched = true;
+            loadedDate = meta.date || '';
+            refresh();
+            status('');
+        }
+
+        async function loadPostList() {
+            if (!getToken()) { $('postList').textContent = 'set a token to load posts'; return; }
+            const res = await fetch(API + 'posts', { headers: headers() });
+            if (!res.ok) { $('postList').textContent = 'could not list posts (check token)'; return; }
+            const files = (await res.json()).filter((f) => f.type === 'file' && f.name.endsWith('.md') && f.name !== 'CLAUDE.md');
+            $('postList').innerHTML = 'edit: ' + files.map((f) =>
+                `<a href="#" data-name="${f.name}">${f.name.replace(/\.md$/, '')}</a>`).join('');
+            $('postList').querySelectorAll('a').forEach((a) => {
+                a.onclick = (e) => { e.preventDefault(); loadPost(a.dataset.name); };
+            });
+        }
+
+        $('newPost').onclick = () => {
+            ['title', 'slug', 'description', 'body'].forEach((id) => $(id).value = '');
+            slugTouched = false;
+            loadedDate = '';
+            refresh();
+            status('');
+        };
+
+        loadPostList();
+    </script>
+</body>
+
+</html>
