@@ -97,6 +97,8 @@
 
     <div id="postList"></div>
 
+    <p id="promptLine" style="font-size:14px; font-style:italic; color:#666; margin-bottom:14px; display:none;"></p>
+
     <input id="title" placeholder="Title" autocomplete="off">
     <input id="slug" placeholder="slug (auto from title)" autocomplete="off" spellcheck="false">
     <input id="description" placeholder="One-line description (optional)" autocomplete="off">
@@ -107,6 +109,7 @@
         <label for="imageFile">insert image</label>
         <input type="file" id="imageFile" accept="image/*" style="display:none">
         <button id="newPost">new</button>
+        <button id="promptBtn">prompt</button>
         <button id="setToken">token</button>
         <span id="status"></span>
     </p>
@@ -277,6 +280,46 @@
                 a.onclick = (e) => { e.preventDefault(); loadPost(a.dataset.name); };
             });
         }
+
+        // --- writing prompts ---
+        const PROMPTS = [
+            "What's something you changed your mind about this year, and what changed it?",
+            "Describe a belief most people around you hold that you think is wrong.",
+            "What did building Folderly teach you that no job could have?",
+            "Write about a time you were completely wrong and didn't realize it for months.",
+            "What's the most useful thing you learned the hard way?",
+            "What do people misunderstand about where you're from?",
+            "What's a tool, habit, or idea you can't believe more people don't use?",
+            "Write the advice you'd give yourself three years ago.",
+            "What's something you do differently from everyone else in your field? Why?",
+            "Describe the moment you realized you could actually build things people want.",
+            "What's overrated? Make the case.",
+            "What's underrated? Make the case.",
+            "Write about a failure that turned out to be load-bearing for a later success.",
+            "What's a question you keep coming back to?",
+            "Explain something technical you know deeply, to a smart 15-year-old.",
+            "What would you work on if money were irrelevant?",
+            "What's the biggest difference between how work looks from outside and inside?",
+            "Write about someone who changed how you think.",
+            "What rule did you break that you're glad you broke?",
+            "What does everyone in your industry pretend to know?",
+            "Describe a small decision that compounded into something big.",
+            "What's the strongest argument against something you believe? Steelman it, then respond.",
+            "What surprised you most about getting users at scale?",
+            "Write about the gap between how something is taught and how it's actually done.",
+            "What's a story you tell in person that you've never written down?",
+            "What did you stop doing, and what happened when you stopped?",
+            "What's obvious to you but apparently not to others?",
+            "Write about a time constraints made the work better.",
+            "What would you tell a kid in Cebu with a laptop and no connections?",
+            "What's the last thing that made you go 'wait, that can't be right' — and was it?",
+        ];
+        let promptDeck = [];
+        $('promptBtn').onclick = () => {
+            if (!promptDeck.length) promptDeck = PROMPTS.slice().sort(() => Math.random() - 0.5);
+            $('promptLine').textContent = promptDeck.pop();
+            $('promptLine').style.display = 'block';
+        };
 
         $('newPost').onclick = () => {
             ['title', 'slug', 'description', 'body'].forEach((id) => $(id).value = '');
