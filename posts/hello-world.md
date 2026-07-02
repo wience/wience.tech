@@ -4,7 +4,7 @@ date: 2026-07-02
 description: The first post, and a tour of what this blog can render.
 ---
 
-I've wanted a place to write for a while. Not a Medium account, not a Substack, just plain essays on my own domain, the way [Paul Graham](https://paulgraham.com) does it. So I built the simplest thing that works: markdown files in a folder, a 200-line build script, and GitHub Pages.
+I've really wanted a place to write for a while. Not a Medium account, not a Substack, just plain essays on my own domain, the way [Paul Graham](https://paulgraham.com) does it. So I built the simplest thing that works: markdown files in a folder, a 200-line build script, and GitHub Pages.
 
 This post exists to exercise the pipeline. Everything below is here to prove it renders.
 
