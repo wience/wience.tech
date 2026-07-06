@@ -140,7 +140,7 @@
 
         .cheat p {
             display: grid;
-            grid-template-columns: 94px 1fr;
+            grid-template-columns: 122px 1fr;
             gap: 10px;
             align-items: baseline;
         }
@@ -223,6 +223,7 @@
                     <p><code>*italic*</code><span>italic</span></p>
                     <p><code>**bold**</code><span>bold</span></p>
                     <p><code>[text](url)</code><span>link</span></p>
+                    <p><code>![cap | 280](url)</code><span>small image</span></p>
                     <p><code>- item</code><span>bullet</span></p>
                     <p><code>&gt; quote</code><span>quote</span></p>
                     <p><code>---</code><span>divider</span></p>
@@ -251,12 +252,19 @@
             hour >= 17 && hour < 21 ? "#fff8f5" : "#f5f7ff";
 
         // same figure rendering as build.js so the preview matches the real post
+        function imageMeta(text) {
+            const m = String(text || '').match(/^(.*?)\s*\|\s*(\d{2,4})(?:px)?$/);
+            return { caption: m ? m[1].trim() : text, width: m ? m[2] : '' };
+        }
+
         marked.use({
             renderer: {
                 image(token) {
+                    const meta = imageMeta(token.text);
                     const src = token.href.startsWith('images/') ? '/blog/' + token.href : token.href;
-                    const cap = token.text ? `<figcaption>${token.text}</figcaption>` : '';
-                    return `<figure><img src="${src}" alt="${token.text || ''}">${cap}</figure>`;
+                    const style = meta.width ? ` style="max-width:${meta.width}px;margin-left:auto;margin-right:auto"` : '';
+                    const cap = meta.caption ? `<figcaption>${meta.caption}</figcaption>` : '';
+                    return `<figure${style}><img src="${src}" alt="${meta.caption || ''}">${cap}</figure>`;
                 }
             }
         });

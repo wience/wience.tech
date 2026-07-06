@@ -12,13 +12,20 @@ const esc = (s) => String(s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-// ![caption](images/x.jpg) -> <figure> with caption; images/ paths resolve to /blog/images/
+function imageMeta(text) {
+    const m = String(text || '').match(/^(.*?)\s*\|\s*(\d{2,4})(?:px)?$/);
+    return { caption: m ? m[1].trim() : text, width: m ? m[2] : '' };
+}
+
+// ![caption | 280](images/x.jpg) -> <figure> with optional max-width; images/ paths resolve to /blog/images/
 marked.use({
     renderer: {
         image(token) {
+            const meta = imageMeta(token.text);
             const src = token.href.startsWith('images/') ? '/blog/' + token.href : token.href;
-            const caption = token.text ? `<figcaption>${esc(token.text)}</figcaption>` : '';
-            return `<figure><img src="${esc(src)}" alt="${esc(token.text || '')}" loading="lazy">${caption}</figure>`;
+            const style = meta.width ? ` style="max-width:${meta.width}px;margin-left:auto;margin-right:auto"` : '';
+            const caption = meta.caption ? `<figcaption>${esc(meta.caption)}</figcaption>` : '';
+            return `<figure${style}><img src="${esc(src)}" alt="${esc(meta.caption || '')}" loading="lazy">${caption}</figure>`;
         }
     }
 });
