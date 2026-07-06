@@ -15,17 +15,49 @@
             font-size: 16px;
             line-height: 1.6;
             color: #000;
-            padding: 40px 20px 60px;
-            max-width: 650px;
+            padding: 32px 20px 60px;
+            max-width: 1180px;
             margin: 0 auto;
             transition: background-color 0.5s ease;
         }
 
-        .crumb { font-size: 13px; color: #666; margin-bottom: 30px; }
+        .crumb { font-size: 13px; color: #666; margin-bottom: 22px; }
         .crumb a { color: #666; }
 
         a { color: #000; text-decoration: underline; text-underline-offset: 2px; }
         a:hover { color: #666; }
+
+        .desk {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 290px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .writer, .panel, .preview-wrap {
+            background: rgba(255, 255, 255, 0.42);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 6px;
+        }
+
+        .writer { padding: 22px; }
+
+        .side {
+            position: sticky;
+            top: 20px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .panel { padding: 16px; }
+
+        .panel h2 {
+            font-size: 13px;
+            font-weight: normal;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: lowercase;
+        }
 
         input, textarea {
             font-family: inherit;
@@ -41,38 +73,89 @@
 
         input:focus, textarea:focus { border-color: #999; }
 
-        #title { font-size: 24px; }
+        #title { font-size: clamp(28px, 4vw, 46px); line-height: 1.05; }
         #slug, #description { font-size: 13px; color: #666; }
 
         textarea {
             border: 1px solid #ddd;
             border-radius: 3px;
-            padding: 12px;
-            min-height: 320px;
+            padding: 16px;
+            min-height: 58vh;
             resize: vertical;
             line-height: 1.6;
+            background: rgba(255, 255, 255, 0.55);
         }
 
-        .bar { font-size: 13px; color: #666; margin-bottom: 20px; }
+        .bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+        }
         .bar button, .bar label {
             font-family: inherit;
-            font-size: 13px;
-            background: none;
-            border: none;
+            font-size: 14px;
+            line-height: 1;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(0, 0, 0, 0.16);
+            border-radius: 4px;
             color: #000;
-            text-decoration: underline;
-            text-underline-offset: 2px;
             cursor: pointer;
-            margin-right: 12px;
-            padding: 0;
+            padding: 10px 12px;
+            text-align: center;
         }
-        .bar button:hover, .bar label:hover { color: #666; }
-        #status { font-style: italic; }
+        .bar button:hover, .bar label:hover { background: rgba(0, 0, 0, 0.04); }
+        #publish { grid-column: 1 / -1; }
+        #status {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+        }
 
-        #postList { font-size: 13px; color: #666; margin-bottom: 20px; }
-        #postList a { margin-right: 10px; color: #666; }
+        #postList { font-size: 13px; color: #666; }
+        #postList a {
+            display: inline-block;
+            margin: 0 8px 8px 0;
+            color: #666;
+        }
 
-        h2.section { font-size: 14px; font-weight: normal; color: #666; margin: 30px 0 10px; border-top: 1px solid #eee; padding-top: 12px; }
+        #promptLine {
+            font-size: 14px;
+            font-style: italic;
+            color: #444;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .cheat {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 7px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .cheat p {
+            display: grid;
+            grid-template-columns: 94px 1fr;
+            gap: 10px;
+            align-items: baseline;
+        }
+
+        .cheat code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 12px;
+            color: #111;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+            padding: 2px 4px;
+        }
+
+        .preview-wrap { margin-top: 28px; padding: 22px; max-width: 720px; }
+        h2.section { font-size: 14px; font-weight: normal; color: #666; margin-bottom: 14px; }
 
         /* preview: mirror the blog's post styles */
         #preview h1 { font-size: 24px; font-weight: normal; margin-bottom: 4px; }
@@ -89,33 +172,70 @@
         #preview pre { background: rgba(0, 0, 0, 0.04); padding: 14px; border-radius: 3px; overflow-x: auto; margin-bottom: 14px; line-height: 1.5; }
         #preview pre code { background: none; padding: 0; }
         #preview hr { border: none; border-top: 1px solid #ddd; width: 100px; margin: 30px auto; }
+
+        @media (max-width: 820px) {
+            body { padding-top: 22px; }
+            .desk { grid-template-columns: 1fr; }
+            .side { position: static; }
+            .writer, .panel, .preview-wrap { padding: 14px; }
+            textarea { min-height: 420px; }
+            .preview-wrap { max-width: none; }
+        }
     </style>
 </head>
 
 <body>
     <p class="crumb"><a href="/">wience.tech</a> · <a href="/blog/">writing</a> · editor</p>
 
-    <div id="postList"></div>
+    <main class="desk">
+        <section class="writer">
+            <input id="title" placeholder="Title" autocomplete="off">
+            <input id="slug" placeholder="slug (auto from title)" autocomplete="off" spellcheck="false">
+            <input id="description" placeholder="One-line description (optional)" autocomplete="off">
+            <textarea id="body" placeholder="Write in markdown. Images: use “insert image” on the right."></textarea>
+        </section>
 
-    <p id="promptLine" style="font-size:14px; font-style:italic; color:#666; margin-bottom:14px; display:none;"></p>
+        <aside class="side">
+            <section class="panel">
+                <h2>actions</h2>
+                <p class="bar">
+                    <button id="publish">publish</button>
+                    <label for="imageFile">insert image</label>
+                    <input type="file" id="imageFile" accept="image/*" style="display:none">
+                    <button id="newPost">new</button>
+                    <button id="promptBtn">prompt</button>
+                    <button id="setToken">token</button>
+                </p>
+                <span id="status"></span>
+                <p id="promptLine"></p>
+            </section>
 
-    <input id="title" placeholder="Title" autocomplete="off">
-    <input id="slug" placeholder="slug (auto from title)" autocomplete="off" spellcheck="false">
-    <input id="description" placeholder="One-line description (optional)" autocomplete="off">
-    <textarea id="body" placeholder="Write in markdown. Images: use “insert image” below."></textarea>
+            <section class="panel">
+                <h2>posts</h2>
+                <div id="postList"></div>
+            </section>
 
-    <p class="bar">
-        <button id="publish">publish</button>
-        <label for="imageFile">insert image</label>
-        <input type="file" id="imageFile" accept="image/*" style="display:none">
-        <button id="newPost">new</button>
-        <button id="promptBtn">prompt</button>
-        <button id="setToken">token</button>
-        <span id="status"></span>
-    </p>
+            <section class="panel">
+                <h2>markdown</h2>
+                <div class="cheat">
+                    <p><code># Title</code><span>big heading</span></p>
+                    <p><code>## Section</code><span>section heading</span></p>
+                    <p><code>*italic*</code><span>italic</span></p>
+                    <p><code>**bold**</code><span>bold</span></p>
+                    <p><code>[text](url)</code><span>link</span></p>
+                    <p><code>- item</code><span>bullet</span></p>
+                    <p><code>&gt; quote</code><span>quote</span></p>
+                    <p><code>---</code><span>divider</span></p>
+                    <p><code>`code`</code><span>inline code</span></p>
+                </div>
+            </section>
+        </aside>
+    </main>
 
-    <h2 class="section">preview</h2>
-    <div id="preview"></div>
+    <section class="preview-wrap">
+        <h2 class="section">preview</h2>
+        <div id="preview"></div>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
     <script>
