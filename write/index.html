@@ -122,6 +122,31 @@
             color: #666;
         }
 
+        .draft-list { display: grid; gap: 9px; font-size: 13px; }
+        .draft-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: start;
+            border-top: 1px solid rgba(0, 0, 0, 0.07);
+            padding-top: 9px;
+        }
+        .draft-row:first-child { border-top: none; padding-top: 0; }
+        .draft-row a { color: #000; }
+        .draft-row small { display: block; color: #777; margin-top: 1px; }
+        .draft-row button {
+            font-family: inherit;
+            font-size: 12px;
+            color: #777;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .draft-row button:hover { color: #000; }
+
         #promptLine {
             font-size: 14px;
             font-style: italic;
@@ -200,6 +225,7 @@
                 <h2>actions</h2>
                 <p class="bar">
                     <button id="publish">publish</button>
+                    <button id="saveDraft">save draft</button>
                     <label for="imageFile">insert image</label>
                     <input type="file" id="imageFile" accept="image/*" style="display:none">
                     <button id="newPost">new</button>
@@ -213,6 +239,11 @@
             <section class="panel">
                 <h2>posts</h2>
                 <div id="postList"></div>
+            </section>
+
+            <section class="panel">
+                <h2>drafts</h2>
+                <div id="draftList" class="draft-list"></div>
             </section>
 
             <section class="panel">
@@ -282,6 +313,7 @@
 
         // --- helpers ---
         const status = (msg) => { $('status').textContent = msg; };
+        const esc = (s) => String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
         const b64encode = (str) => {
             const bytes = new TextEncoder().encode(str);
@@ -296,10 +328,73 @@
 
         let slugTouched = false;
         let loadedDate = ''; // preserve original date when editing
+        let activeDraftId = '';
         $('slug').addEventListener('input', () => { slugTouched = true; });
         $('title').addEventListener('input', () => {
             if (!slugTouched) $('slug').value = slugify($('title').value);
         });
+
+        function currentDraft() {
+            return {
+                id: activeDraftId || String(Date.now()),
+                title: $('title').value,
+                slug: $('slug').value,
+                description: $('description').value,
+                body: $('body').value,
+                updatedAt: new Date().toISOString(),
+            };
+        }
+
+        const hasDraftContent = (d) => (d.title + d.slug + d.description + d.body).trim();
+        const readDrafts = () => {
+            try { return JSON.parse(localStorage.getItem('drafts') || '[]'); }
+            catch { return []; }
+        };
+        const writeDrafts = (drafts) => localStorage.setItem('drafts', JSON.stringify(drafts));
+
+        function renderDrafts() {
+            const drafts = readDrafts();
+            if (!drafts.length) { $('draftList').textContent = 'no saved drafts yet'; return; }
+            $('draftList').innerHTML = drafts.map((d) => {
+                const name = d.title || d.slug || d.body.split('\n')[0] || 'untitled';
+                const when = d.updatedAt ? new Date(d.updatedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+                return `<div class="draft-row">
+                    <span><a href="#" data-load-draft="${esc(d.id)}">${esc(name)}</a><small>${esc(when)}</small></span>
+                    <button data-delete-draft="${esc(d.id)}">delete</button>
+                </div>`;
+            }).join('');
+        }
+
+        function saveDraft(showStatus = true) {
+            const draft = currentDraft();
+            if (!hasDraftContent(draft)) return showStatus && status('nothing to save');
+            activeDraftId = draft.id;
+            writeDrafts([draft, ...readDrafts().filter((d) => d.id !== draft.id)]);
+            renderDrafts();
+            if (showStatus) status('draft saved');
+        }
+
+        function loadDraft(id) {
+            const draft = readDrafts().find((d) => d.id === id);
+            if (!draft) return status('draft missing');
+            activeDraftId = draft.id;
+            loadedDate = '';
+            $('title').value = draft.title || '';
+            $('slug').value = draft.slug || '';
+            $('description').value = draft.description || '';
+            $('body').value = draft.body || '';
+            slugTouched = !!draft.slug;
+            refresh();
+            status('draft loaded');
+        }
+
+        function deleteDraft(id) {
+            if (!confirm('Delete this draft?')) return;
+            writeDrafts(readDrafts().filter((d) => d.id !== id));
+            if (activeDraftId === id) activeDraftId = '';
+            renderDrafts();
+            status('draft deleted');
+        }
 
         // --- live preview + draft autosave ---
         function refresh() {
@@ -308,6 +403,7 @@
                 title: $('title').value, slug: $('slug').value,
                 description: $('description').value, body: $('body').value,
             }));
+            if (activeDraftId) saveDraft(false);
         }
         ['title', 'slug', 'description', 'body'].forEach((id) => $(id).addEventListener('input', refresh));
 
@@ -353,6 +449,8 @@
             } catch (e) { status('failed — ' + e.message); }
         };
 
+        $('saveDraft').onclick = () => saveDraft();
+
         // --- image upload ---
         $('imageFile').addEventListener('change', async () => {
             const file = $('imageFile').files[0];
@@ -392,6 +490,7 @@
             $('description').value = meta.description || '';
             $('body').value = (m ? m[2] : md).trim();
             slugTouched = true;
+            activeDraftId = '';
             loadedDate = meta.date || '';
             refresh();
             status('');
@@ -408,6 +507,13 @@
                 a.onclick = (e) => { e.preventDefault(); loadPost(a.dataset.name); };
             });
         }
+
+        $('draftList').onclick = (e) => {
+            const load = e.target.closest('[data-load-draft]');
+            const del = e.target.closest('[data-delete-draft]');
+            if (load) { e.preventDefault(); loadDraft(load.dataset.loadDraft); }
+            if (del) deleteDraft(del.dataset.deleteDraft);
+        };
 
         // --- writing prompts ---
         const PROMPTS = [
@@ -453,10 +559,12 @@
             ['title', 'slug', 'description', 'body'].forEach((id) => $(id).value = '');
             slugTouched = false;
             loadedDate = '';
+            activeDraftId = '';
             refresh();
             status('');
         };
 
+        renderDrafts();
         loadPostList();
     </script>
 </body>
