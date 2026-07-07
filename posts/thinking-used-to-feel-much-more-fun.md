@@ -1,6 +1,7 @@
 ---
-title: thinking used to feel *~ much more ~* fun
+title: thinking used to feel ~much more~ rewarding
 date: 2026-07-07
+tags: life, learning, books
 ---
 
 ![I think that’s what I miss most about coding before ai, not the difficulty itself, but the feeling that every small thing had to be understood deliberately. | 300](images/pinup-52p-hdt-1200x1500-1.png)
