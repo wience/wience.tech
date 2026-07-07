@@ -41,6 +41,12 @@ function readingTime(body) {
     return Math.max(1, Math.ceil(words.length / 225));
 }
 
+function renderMarkdown(body) {
+    return marked.parse(body.replace(/^:::\s*center\s*\n([\s\S]*?)\n:::\s*$/gm, (_, inner) =>
+        `<div class="center-block">\n${marked.parse(inner).trim()}\n</div>`
+    ));
+}
+
 function parsePost(file) {
     const src = fs.readFileSync(path.join(POSTS, file), 'utf8');
     const m = src.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
@@ -53,7 +59,7 @@ function parsePost(file) {
     if (!meta.title || !meta.date) throw new Error(`${file}: frontmatter needs title and date`);
     const slug = file.replace(/\.md$/, '');
     // unwrap <figure> from the <p> marked puts standalone images in
-    const html = marked.parse(m[2]).replace(/<p>(<figure[\s\S]*?<\/figure>)<\/p>/g, '$1');
+    const html = renderMarkdown(m[2]).replace(/<p>(<figure[\s\S]*?<\/figure>)<\/p>/g, '$1');
     // ponytail: tags are manual; the editor offers presets instead of guessing wrong.
     const tags = parseTags(meta.tags);
     return { slug, title: meta.title, date: new Date(meta.date), description: meta.description || '', tags, minutes: readingTime(m[2]), html };
@@ -119,6 +125,9 @@ function page({ title, description, url, body }) {
         figcaption { font-size: 13px; color: #666; font-style: italic; text-align: center; margin-top: 8px; }
 
         blockquote { border-left: 2px solid #ccc; padding-left: 14px; color: #444; font-style: italic; margin-bottom: 14px; }
+
+        .center-block { text-align: center; margin: 34px 0; }
+        .center-block p { margin-bottom: 18px; }
 
         code { font-family: monospace; font-size: 13px; background: rgba(0, 0, 0, 0.05); padding: 1px 4px; border-radius: 3px; }
         pre { background: rgba(0, 0, 0, 0.04); padding: 14px; border-radius: 3px; overflow-x: auto; margin-bottom: 14px; line-height: 1.5; }

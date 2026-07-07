@@ -216,6 +216,8 @@
         #preview figure img { display: block; width: 100%; border-radius: 3px; }
         #preview figcaption { font-size: 13px; color: #666; font-style: italic; text-align: center; margin-top: 8px; }
         #preview blockquote { border-left: 2px solid #ccc; padding-left: 14px; color: #444; font-style: italic; margin-bottom: 14px; }
+        #preview .center-block { text-align: center; margin: 34px 0; }
+        #preview .center-block p { margin-bottom: 18px; }
         #preview code { font-family: monospace; font-size: 13px; background: rgba(0, 0, 0, 0.05); padding: 1px 4px; border-radius: 3px; }
         #preview pre { background: rgba(0, 0, 0, 0.04); padding: 14px; border-radius: 3px; overflow-x: auto; margin-bottom: 14px; line-height: 1.5; }
         #preview pre code { background: none; padding: 0; }
@@ -282,6 +284,7 @@
                     <p><code>![cap | 280](url)</code><span>small image</span></p>
                     <p><code>- item</code><span>bullet</span></p>
                     <p><code>&gt; quote</code><span>quote</span></p>
+                    <p><code>::: center</code><span>center block</span></p>
                     <p><code>---</code><span>divider</span></p>
                     <p><code>`code`</code><span>inline code</span></p>
                 </div>
@@ -351,6 +354,9 @@
             const bin = atob(b64.replace(/\n/g, ''));
             return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
         };
+        const renderMarkdown = (body) => marked.parse(body.replace(/^:::\s*center\s*\n([\s\S]*?)\n:::\s*$/gm, (_, inner) =>
+            `<div class="center-block">\n${marked.parse(inner).trim()}\n</div>`
+        ));
 
         let slugTouched = false;
         let loadedDate = ''; // preserve original date when editing
@@ -426,7 +432,7 @@
 
         // --- live preview + draft autosave ---
         function refresh() {
-            $('preview').innerHTML = marked.parse($('body').value);
+            $('preview').innerHTML = renderMarkdown($('body').value);
             localStorage.setItem('draft', JSON.stringify({
                 title: $('title').value, slug: $('slug').value,
                 description: $('description').value, tags: $('tags').value, body: $('body').value,
