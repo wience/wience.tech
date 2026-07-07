@@ -103,7 +103,7 @@ function analyticsScript(path, counters = false) {
 }
 
 // Shared shell reproducing the index.html aesthetic (Times, 650px, time-tinted bg, cursor trail)
-function page({ title, description, url, body, analyticsPath = '', counters = false }) {
+function page({ title, description, url, body, analyticsPath = '', counters = false, wide = false }) {
     return `<!DOCTYPE html>
 <html lang="en">
 
@@ -140,6 +140,8 @@ function page({ title, description, url, body, analyticsPath = '', counters = fa
             transition: background-color 0.5s ease;
         }
 
+        body.wide { max-width: 900px; }
+
         .crumb, .date, [data-read-count] { font-size: 13px; color: #666; }
         .crumb { margin-bottom: 30px; }
         .crumb a, .date a { color: #666; }
@@ -174,6 +176,10 @@ function page({ title, description, url, body, analyticsPath = '', counters = fa
         .posts { list-style: none; margin-left: 0; }
         .posts li { margin-bottom: 8px; }
 
+        @media (min-width: 760px) {
+            .posts li { white-space: nowrap; }
+        }
+
         .end-nav { margin-top: 40px; font-size: 13px; }
 
         .trail {
@@ -189,7 +195,7 @@ function page({ title, description, url, body, analyticsPath = '', counters = fa
     </style>
 </head>
 
-<body>
+<body${wide ? ' class="wide"' : ''}>
 ${body}
     <script>
         // Time-aware background (same tints as the homepage)
@@ -300,6 +306,7 @@ fs.writeFileSync(path.join(OUT, 'blog', 'index.html'), page({
 ${listItems}
     </ul>`,
     counters: true,
+    wide: true,
 }));
 
 // RSS
