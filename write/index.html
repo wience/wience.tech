@@ -74,7 +74,7 @@
         input:focus, textarea:focus { border-color: #999; }
 
         #title { font-size: clamp(28px, 4vw, 46px); line-height: 1.05; }
-        #slug, #description { font-size: 13px; color: #666; }
+        #slug, #description, #tags { font-size: 13px; color: #666; }
 
         textarea {
             border: 1px solid #ddd;
@@ -147,6 +147,26 @@
         }
         .draft-row button:hover { color: #000; }
 
+        .tag-picks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .tag-picks button {
+            font-family: inherit;
+            font-size: 12px;
+            color: #555;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(0, 0, 0, 0.13);
+            border-radius: 999px;
+            cursor: pointer;
+            padding: 3px 8px;
+        }
+
+        .tag-picks button:hover { color: #000; border-color: rgba(0, 0, 0, 0.35); }
+
         #promptLine {
             font-size: 14px;
             font-style: italic;
@@ -217,6 +237,8 @@
             <input id="title" placeholder="Title" autocomplete="off">
             <input id="slug" placeholder="slug (auto from title)" autocomplete="off" spellcheck="false">
             <input id="description" placeholder="One-line description (optional)" autocomplete="off">
+            <input id="tags" placeholder="tags: ai, coding, books (optional)" autocomplete="off" spellcheck="false">
+            <p id="tagPicks" class="tag-picks"></p>
             <textarea id="body" placeholder="Write in markdown. Images: use “insert image” on the right."></textarea>
         </section>
 
@@ -315,6 +337,7 @@
         const status = (msg) => { $('status').textContent = msg; };
         const esc = (s) => String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const parseTags = (s) => [...new Set(s.split(',').map((t) => slugify(t.trim())).filter(Boolean))];
         const b64encode = (str) => {
             const bytes = new TextEncoder().encode(str);
             let bin = '';
@@ -340,12 +363,13 @@
                 title: $('title').value,
                 slug: $('slug').value,
                 description: $('description').value,
+                tags: $('tags').value,
                 body: $('body').value,
                 updatedAt: new Date().toISOString(),
             };
         }
 
-        const hasDraftContent = (d) => (d.title + d.slug + d.description + d.body).trim();
+        const hasDraftContent = (d) => [d.title, d.slug, d.description, d.tags, d.body].join('').trim();
         const readDrafts = () => {
             try { return JSON.parse(localStorage.getItem('drafts') || '[]'); }
             catch { return []; }
@@ -382,6 +406,7 @@
             $('title').value = draft.title || '';
             $('slug').value = draft.slug || '';
             $('description').value = draft.description || '';
+            $('tags').value = draft.tags || '';
             $('body').value = draft.body || '';
             slugTouched = !!draft.slug;
             refresh();
@@ -401,16 +426,16 @@
             $('preview').innerHTML = marked.parse($('body').value);
             localStorage.setItem('draft', JSON.stringify({
                 title: $('title').value, slug: $('slug').value,
-                description: $('description').value, body: $('body').value,
+                description: $('description').value, tags: $('tags').value, body: $('body').value,
             }));
             if (activeDraftId) saveDraft(false);
         }
-        ['title', 'slug', 'description', 'body'].forEach((id) => $(id).addEventListener('input', refresh));
+        ['title', 'slug', 'description', 'tags', 'body'].forEach((id) => $(id).addEventListener('input', refresh));
 
         const draft = JSON.parse(localStorage.getItem('draft') || 'null');
         if (draft) {
             $('title').value = draft.title; $('slug').value = draft.slug;
-            $('description').value = draft.description; $('body').value = draft.body;
+            $('description').value = draft.description; $('tags').value = draft.tags || ''; $('body').value = draft.body;
             slugTouched = !!draft.slug;
             refresh();
         }
@@ -440,7 +465,8 @@
             if (!getToken()) return $('setToken').click();
             const date = loadedDate || new Date().toISOString().slice(0, 10);
             const desc = $('description').value.trim();
-            const md = `---\ntitle: ${title}\ndate: ${date}\n${desc ? `description: ${desc}\n` : ''}---\n\n${$('body').value.trim()}\n`;
+            const tags = parseTags($('tags').value);
+            const md = `---\ntitle: ${title}\ndate: ${date}\n${desc ? `description: ${desc}\n` : ''}${tags.length ? `tags: ${tags.join(', ')}\n` : ''}---\n\n${$('body').value.trim()}\n`;
             status('publishing…');
             try {
                 const verb = await putFile(`posts/${slug}.md`, b64encode(md), `Post: ${title}`);
@@ -488,6 +514,7 @@
             $('title').value = meta.title || '';
             $('slug').value = name.replace(/\.md$/, '');
             $('description').value = meta.description || '';
+            $('tags').value = meta.tags || '';
             $('body').value = (m ? m[2] : md).trim();
             slugTouched = true;
             activeDraftId = '';
@@ -513,6 +540,15 @@
             const del = e.target.closest('[data-delete-draft]');
             if (load) { e.preventDefault(); loadDraft(load.dataset.loadDraft); }
             if (del) deleteDraft(del.dataset.deleteDraft);
+        };
+
+        const PRESET_TAGS = ['ai', 'coding', 'books', 'school', 'cebu', 'startups', 'work', 'life', 'learning', 'notes'];
+        $('tagPicks').innerHTML = PRESET_TAGS.map((t) => `<button type="button" data-tag="${t}">#${t}</button>`).join('');
+        $('tagPicks').onclick = (e) => {
+            const tag = e.target.dataset.tag;
+            if (!tag) return;
+            $('tags').value = parseTags($('tags').value + ',' + tag).join(', ');
+            refresh();
         };
 
         // --- writing prompts ---
@@ -556,7 +592,7 @@
         };
 
         $('newPost').onclick = () => {
-            ['title', 'slug', 'description', 'body'].forEach((id) => $(id).value = '');
+            ['title', 'slug', 'description', 'tags', 'body'].forEach((id) => $(id).value = '');
             slugTouched = false;
             loadedDate = '';
             activeDraftId = '';

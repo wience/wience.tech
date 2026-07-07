@@ -30,33 +30,15 @@ marked.use({
     }
 });
 
-// crude-but-honest keyword extraction: top words by frequency, minus stopwords.
-// override with a `tags: a, b, c` frontmatter line.
-const STOPWORDS = new Set(('a about above after again all also am an and any are as at be because been before being below ' +
-    'between both but by can could did do does doing down during each few for from further had has have having he her here ' +
-    'hers herself him himself his how i if in into is it its itself just like me more most my myself no nor not now of off ' +
-    'on once only or other our ours ourselves out over own same she should so some such than that the their theirs them ' +
-    'themselves then there these they this those through to too under until up very was we were what when where which while ' +
-    'who whom why will with you your yours yourself yourselves im ive dont its thats youre wont cant one two get got way ' +
-    'thing things really actually even still make makes made want wanted people time year years first new').split(' '));
+const parseTags = (s) => [...new Set(String(s || '').split(',').map((t) => t.trim().toLowerCase()).filter(Boolean))];
 
-function autoTags(title, body) {
-    const text = (title + ' ' + body)
-        .replace(/```[\s\S]*?```/g, ' ')          // code blocks
-        .replace(/`[^`]*`/g, ' ')                 // inline code
-        .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1') // links/images -> keep text
-        .toLowerCase();
-    const counts = {};
-    for (const word of text.match(/[a-z][a-z'-]{2,}/g) || []) {
-        const w = word.replace(/['-]/g, '');
-        if (w.length < 3 || STOPWORDS.has(w)) continue;
-        counts[w] = (counts[w] || 0) + 1;
-    }
-    return Object.entries(counts)
-        .filter(([, n]) => n >= 2)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([w]) => w);
+function readingTime(body) {
+    const text = body
+        .replace(/```[\s\S]*?```/g, ' ')
+        .replace(/`[^`]*`/g, ' ')
+        .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1');
+    const words = text.match(/\b[\w'-]+\b/g) || [];
+    return Math.max(1, Math.ceil(words.length / 225));
 }
 
 function parsePost(file) {
@@ -72,10 +54,9 @@ function parsePost(file) {
     const slug = file.replace(/\.md$/, '');
     // unwrap <figure> from the <p> marked puts standalone images in
     const html = marked.parse(m[2]).replace(/<p>(<figure[\s\S]*?<\/figure>)<\/p>/g, '$1');
-    const tags = meta.tags
-        ? meta.tags.split(',').map((t) => t.trim()).filter(Boolean)
-        : autoTags(meta.title, m[2]);
-    return { slug, title: meta.title, date: new Date(meta.date), description: meta.description || '', tags, html };
+    // ponytail: tags are manual; the editor offers presets instead of guessing wrong.
+    const tags = parseTags(meta.tags);
+    return { slug, title: meta.title, date: new Date(meta.date), description: meta.description || '', tags, minutes: readingTime(m[2]), html };
 }
 
 const displayDate = (d) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
@@ -240,7 +221,7 @@ for (const post of posts) {
     const tagLine = post.tags.length ? ` · ${post.tags.map((t) => '#' + esc(t)).join(' ')}` : '';
     const body = `    <p class="crumb"><a href="/">wience.tech</a> · <a href="/blog/">writing</a></p>
     <h1>${esc(post.title)}</h1>
-    <p class="date">${displayDate(post.date)}${tagLine}</p>
+    <p class="date">${displayDate(post.date)} · ${post.minutes} min read${tagLine}</p>
     <article>
 ${post.html}    </article>
     <p class="end-nav"><a href="/blog/">← writing</a></p>`;
@@ -255,7 +236,7 @@ ${post.html}    </article>
 
 // blog index
 const listItems = posts.map((p) =>
-    `        <li><a href="/blog/${p.slug}/">${esc(p.title)}</a> <span class="date">— ${displayDate(p.date)}${p.tags.length ? ' · ' + p.tags.map((t) => '#' + esc(t)).join(' ') : ''}</span></li>`
+    `        <li><a href="/blog/${p.slug}/">${esc(p.title)}</a> <span class="date">— ${displayDate(p.date)} · ${p.minutes} min read${p.tags.length ? ' · ' + p.tags.map((t) => '#' + esc(t)).join(' ') : ''}</span></li>`
 ).join('\n');
 fs.writeFileSync(path.join(OUT, 'blog', 'index.html'), page({
     title: 'writing · Wince Dela Fuente',
