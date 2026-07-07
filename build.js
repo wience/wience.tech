@@ -68,8 +68,8 @@ function parsePost(file) {
 
 const displayDate = (d) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 
-function analyticsScript(path) {
-    if (!path) return '';
+function analyticsScript(path, counters = false) {
+    if (!path && !counters) return '';
     return `    <script>
         (() => {
             const code = '${GOATCOUNTER_CODE}';
@@ -78,17 +78,19 @@ function analyticsScript(path) {
             if (params.get('owner') === '1') localStorage.setItem('wience_owner', '1');
             if (params.get('owner') === '0') localStorage.removeItem('wience_owner');
 
-            const readCount = document.getElementById('read-count');
-            if (readCount) fetch('https://' + code + '.goatcounter.com/counter/' + encodeURIComponent(path) + '.json')
+            document.querySelectorAll('[data-read-count]').forEach((el) => {
+                const counterPath = el.dataset.readCount;
+                fetch('https://' + code + '.goatcounter.com/counter/' + encodeURIComponent(counterPath) + '.json')
                 .then((res) => res.ok ? res.json() : null)
                 .then((data) => {
                     if (!data || !data.count) return;
                     const n = Number(String(data.count).replace(/,/g, ''));
-                    readCount.textContent = ' · ' + data.count + ' ' + (n === 1 ? 'read' : 'reads');
+                    el.textContent = ' · ' + data.count + ' ' + (n === 1 ? 'read' : 'reads');
                 })
                 .catch(() => {});
+            });
 
-            if (localStorage.getItem('wience_owner') === '1') return;
+            if (!path || localStorage.getItem('wience_owner') === '1') return;
             window.goatcounter = { path };
             const script = document.createElement('script');
             script.async = true;
@@ -101,7 +103,7 @@ function analyticsScript(path) {
 }
 
 // Shared shell reproducing the index.html aesthetic (Times, 650px, time-tinted bg, cursor trail)
-function page({ title, description, url, body, analyticsPath = '' }) {
+function page({ title, description, url, body, analyticsPath = '', counters = false }) {
     return `<!DOCTYPE html>
 <html lang="en">
 
@@ -138,7 +140,7 @@ function page({ title, description, url, body, analyticsPath = '' }) {
             transition: background-color 0.5s ease;
         }
 
-        .crumb, .date, #read-count { font-size: 13px; color: #666; }
+        .crumb, .date, [data-read-count] { font-size: 13px; color: #666; }
         .crumb { margin-bottom: 30px; }
         .crumb a, .date a { color: #666; }
         .date { margin-bottom: 30px; }
@@ -226,7 +228,7 @@ ${body}
         }
         animateTrail();
     </script>
-${analyticsScript(analyticsPath)}
+${analyticsScript(analyticsPath, counters)}
 </body>
 
 </html>
@@ -269,7 +271,7 @@ for (const post of posts) {
     const analyticsPath = `/blog/${post.slug}/`;
     const body = `    <p class="crumb"><a href="/">wience.tech</a> · <a href="/blog/">writing</a></p>
     <h1>${esc(post.title)}</h1>
-    <p class="date">${displayDate(post.date)} · ${post.minutes} min read<span id="read-count" data-path="${analyticsPath}"></span>${tagLine}</p>
+    <p class="date">${displayDate(post.date)} · ${post.minutes} min read<span data-read-count="${analyticsPath}"></span>${tagLine}</p>
     <article>
 ${post.html}    </article>
     <p class="end-nav"><a href="/blog/">← writing</a></p>`;
@@ -285,7 +287,7 @@ ${post.html}    </article>
 
 // blog index
 const listItems = posts.map((p) =>
-    `        <li><a href="/blog/${p.slug}/">${esc(p.title)}</a> <span class="date">— ${displayDate(p.date)} · ${p.minutes} min read${p.tags.length ? ' · ' + p.tags.map((t) => '#' + esc(t)).join(' ') : ''}</span></li>`
+    `        <li><a href="/blog/${p.slug}/">${esc(p.title)}</a> <span class="date">— ${displayDate(p.date)} · ${p.minutes} min read<span data-read-count="/blog/${p.slug}/"></span>${p.tags.length ? ' · ' + p.tags.map((t) => '#' + esc(t)).join(' ') : ''}</span></li>`
 ).join('\n');
 fs.writeFileSync(path.join(OUT, 'blog', 'index.html'), page({
     title: 'writing · Wince Dela Fuente',
@@ -297,6 +299,7 @@ fs.writeFileSync(path.join(OUT, 'blog', 'index.html'), page({
     <ul class="posts">
 ${listItems}
     </ul>`,
+    counters: true,
 }));
 
 // RSS
