@@ -7,6 +7,7 @@ const ROOT = __dirname;
 const OUT = path.join(ROOT, '_site');
 const POSTS = path.join(ROOT, 'posts');
 const SITE_URL = 'https://wience.tech';
+const GOATCOUNTER_CODE = 'wience';
 
 const esc = (s) => String(s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -67,8 +68,40 @@ function parsePost(file) {
 
 const displayDate = (d) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 
+function analyticsScript(path) {
+    if (!path) return '';
+    return `    <script>
+        (() => {
+            const code = '${GOATCOUNTER_CODE}';
+            const path = '${path}';
+            const params = new URLSearchParams(location.search);
+            if (params.get('owner') === '1') localStorage.setItem('wience_owner', '1');
+            if (params.get('owner') === '0') localStorage.removeItem('wience_owner');
+
+            const readCount = document.getElementById('read-count');
+            if (readCount) fetch('https://' + code + '.goatcounter.com/counter/' + encodeURIComponent(path) + '.json')
+                .then((res) => res.ok ? res.json() : null)
+                .then((data) => {
+                    if (!data || !data.count) return;
+                    const n = Number(String(data.count).replace(/,/g, ''));
+                    readCount.textContent = ' · ' + data.count + ' ' + (n === 1 ? 'read' : 'reads');
+                })
+                .catch(() => {});
+
+            if (localStorage.getItem('wience_owner') === '1') return;
+            window.goatcounter = { path };
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://gc.zgo.at/count.js';
+            script.dataset.goatcounter = 'https://' + code + '.goatcounter.com/count';
+            document.body.appendChild(script);
+        })();
+    </script>
+`;
+}
+
 // Shared shell reproducing the index.html aesthetic (Times, 650px, time-tinted bg, cursor trail)
-function page({ title, description, url, body }) {
+function page({ title, description, url, body, analyticsPath = '' }) {
     return `<!DOCTYPE html>
 <html lang="en">
 
@@ -86,6 +119,7 @@ function page({ title, description, url, body }) {
     <meta property="og:url" content="${url}">
     <meta property="og:type" content="article">
     <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="${url}">
     <link rel="alternate" type="application/rss+xml" title="Wince Dela Fuente" href="/feed.xml">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -104,7 +138,7 @@ function page({ title, description, url, body }) {
             transition: background-color 0.5s ease;
         }
 
-        .crumb, .date { font-size: 13px; color: #666; }
+        .crumb, .date, #read-count { font-size: 13px; color: #666; }
         .crumb { margin-bottom: 30px; }
         .crumb a, .date a { color: #666; }
         .date { margin-bottom: 30px; }
@@ -192,6 +226,7 @@ ${body}
         }
         animateTrail();
     </script>
+${analyticsScript(analyticsPath)}
 </body>
 
 </html>
@@ -231,9 +266,10 @@ const posts = fs.readdirSync(POSTS).filter((f) => f.endsWith('.md') && !NOT_POST
 
 for (const post of posts) {
     const tagLine = post.tags.length ? ` · ${post.tags.map((t) => '#' + esc(t)).join(' ')}` : '';
+    const analyticsPath = `/blog/${post.slug}/`;
     const body = `    <p class="crumb"><a href="/">wience.tech</a> · <a href="/blog/">writing</a></p>
     <h1>${esc(post.title)}</h1>
-    <p class="date">${displayDate(post.date)} · ${post.minutes} min read${tagLine}</p>
+    <p class="date">${displayDate(post.date)} · ${post.minutes} min read<span id="read-count" data-path="${analyticsPath}"></span>${tagLine}</p>
     <article>
 ${post.html}    </article>
     <p class="end-nav"><a href="/blog/">← writing</a></p>`;
@@ -243,6 +279,7 @@ ${post.html}    </article>
         description: post.description || `An essay by Wince Dela Fuente`,
         url: `${SITE_URL}/blog/${post.slug}/`,
         body,
+        analyticsPath,
     }));
 }
 
