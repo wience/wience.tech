@@ -169,7 +169,7 @@
 
 <body>
     <h1 id="name">Wince Dela Fuente</h1>
-    <p class="greeting" id="greeting"></p>
+    <p class="greeting" id="greeting">building <a href="https://x.com/littlebirdai">@littlebirdai</a></p>
     <p class="links">
         <a href="mailto:delafuentewince@gmail.com">email</a>
         <a href="https://github.com/wience">github</a>
@@ -254,9 +254,7 @@
         // Time-aware greeting and background
         function updateGreeting() {
             const hour = new Date().getHours();
-            const greeting = document.getElementById('greeting');
-            let text, bgColor;
-            text = "building @littlebirdai";
+            let bgColor;
             if (hour >= 5 && hour < 12) {
                 bgColor = "#fffef5";
             } else if (hour >= 12 && hour < 17) {
@@ -267,7 +265,6 @@
                 bgColor = "#f5f7ff";
             }
 
-            greeting.textContent = text;
             document.body.style.backgroundColor = bgColor;
         }
 
