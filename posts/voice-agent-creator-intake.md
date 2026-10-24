@@ -9,9 +9,9 @@ i spent this week building a voice version of one piece of creatorly. this is pa
 
 ## the setup
 
-creatorly was an influencer platform i contracted on earlier this year. a brand emails a creator, an llm handles the replies, and a person takes over once the creator accepts an offer. i built contract signing and the dashboard frontend there. the negotiation engine was a teammate's.
+creatorly is the system we built at folderly, the planner app i co-founded, to run our creator marketing. it emails creators about promoting folderly, an llm handles the replies, and a person on our team takes over once a creator accepts an offer. i built the contract signing and the dashboard. the negotiation engine was a teammate's.
 
-i wanted the first part of that, the intake, as a voice call on elevenlabs agents. the agent asks for audience, platforms, average views, format, what they'd make, their rate and when they can start. then it reads everything back, says what's missing, and tells the creator a person will review it. the brand is a made-up one called tasklet, and every creator in the tests is fictional.
+i wanted the first part of that, the intake, as a voice call on elevenlabs agents. the agent asks for audience, platforms, average views, format, what they'd make, their rate and when they can start. then it reads everything back, says what's missing, and tells the creator a person will review it. in the prototype the agent speaks for a made-up brand called tasklet instead of folderly, and every creator in the tests is fictional.
 
 the agent can't approve anything. no prices, no "that rate sounds fair", no payment promises. it says it's an AI in its first line. the email version didn't disclose that, but on a call i think it has to.
 
