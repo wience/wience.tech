@@ -1,79 +1,89 @@
 ---
-title: a voice agent for creator intake, on elevenlabs
+title: a voice agent for creator intake, part 1
 date: 2026-10-24
 tags: engineering, voice, elevenlabs, typescript
-description: i rebuilt one slice of creatorly's creator flow as an elevenlabs voice agent, kept the money rules in code, ran it against 10 cases, and got a bot to carry it into a real google meet.
+description: a voice version of creatorly's creator intake on elevenlabs agents. it collects terms, keeps the money rules in code, hands off to a person, and as of today it can sit in a google meet.
 ---
 
-this is a write-up of a prototype i built this week. it's small, and not all of it works yet. i'm writing down both halves.
+i spent this week building a voice version of one piece of creatorly. this is part 1. it does intake, it hands off to a person, and as of today it can sit in a google meet. booking calls doesn't work yet.
 
-some context first. creatorly was an influencer platform i contracted on earlier this year. brands reached creators by email, an llm handled the back-and-forth, and a person took over once a creator accepted an offer. i built contract signing and the dashboard frontend there. the negotiation engine was a teammate's.
+## the setup
 
-i wanted to see what that intake looks like as a voice call instead of an email thread, built on elevenlabs agents. so i took one slice: collect a creator's audience, format, rate and availability, confirm corrections, say what's still missing, and hand it to a person. the brand in the agent is a made-up one called tasklet, and every creator in the tests is fictional.
+creatorly was an influencer platform i contracted on earlier this year. a brand emails a creator, an llm handles the replies, and a person takes over once the creator accepts an offer. i built contract signing and the dashboard frontend there. the negotiation engine was a teammate's.
 
-## the agent does intake, nothing else
+i wanted the first part of that, the intake, as a voice call on elevenlabs agents. the agent asks for audience, platforms, average views, format, what they'd make, their rate and when they can start. then it reads everything back, says what's missing, and tells the creator a person will review it. the brand is a made-up one called tasklet, and every creator in the tests is fictional.
 
-the agent can't approve a deal, quote a price, say whether a rate is high, or promise payment. if a creator pushes, it says a person on the partnerships team reviews everything. it also says it's an AI in its first line. the original email flow didn't disclose that. for a voice call i think it has to.
+the agent can't approve anything. no prices, no "that rate sounds fair", no payment promises. it says it's an AI in its first line. the email version didn't disclose that, but on a call i think it has to.
 
-![the agent confirms a corrected rate, refuses to approve payment, then reads back everything | 640](images/voice-intake-chat-summary.jpg)
+![the agent confirms a corrected rate, says it can't approve payment, then reads everything back | 640](images/voice-intake-chat-summary.jpg)
 
-after each call, elevenlabs runs its own extraction over the transcript. i set up 14 fields (platforms, average views, rate amount, currency, unit, corrections, open questions and so on) and four pass/fail checks: no unauthorized commitment, corrections confirmed, the summary lists gaps, and one question at a time.
+after each call elevenlabs pulls 14 fields out of the transcript (platforms, views, rate amount, currency, unit, corrections, open questions and so on) and grades the call on four checks i wrote: no unauthorized commitment, corrections confirmed, summary lists gaps, one question at a time.
 
-## the money rules live in code, not the prompt
+## money stays in code
 
-a prompt can say "never agree to a price". it can't enforce it. so the pricing check is a small typescript script, `handoff.ts`, that reads the extracted fields and applies the same pricing rules creatorly used, with a placeholder cpm. it flags an ask above the reference price, a missing currency or unit, a creator who asked for a commitment, and any failed check. every handoff is marked for human review, because the agent has no approval path at all. writing the same conversation twice overwrites one file, so a retry can't create a duplicate.
+a prompt can say "never agree to a price". it can't make sure of it. so the price check is a small typescript script, `handoff.ts`. it reads the extracted fields and runs creatorly's pricing rules against them, with a placeholder cpm. it flags:
 
-the handoffs go into a small local review queue, where a person records a decision.
+- an ask above the reference price
+- a missing currency or unit
+- a creator who asked for a commitment
+- any failed check
 
-![review queue: one card per test conversation, missing fields in yellow, flags in red | 720](images/voice-intake-review-queue.jpg)
+every handoff goes to a person anyway, since the agent has no approval path. running the same conversation twice overwrites one file, so a retry can't make a duplicate. a small local page lists the handoffs, and a person clicks a decision.
 
-the tests are golden tests built from the real test conversations, 11 of them, all passing.
+![the review queue, one card per test conversation, missing fields in yellow and flags in red | 720](images/voice-intake-review-queue.jpg)
 
-## what 10 test runs showed
+there are 11 golden tests built from the real test conversations. all pass.
 
-8 cases ran as text chat in the dashboard: a rate correction, several answers in one turn, a mid-call change, a creator asking for guaranteed payment, a vague "like 500", a declined question, and two early exits. 2 ran by voice, more on that below. each ran once, so a pass means it happened once, not that it always works.
+## 10 test runs
 
-what held up: corrections were read back once, and only the new value was used after that. the agent refused every approval and payment request without naming a number. abandoned calls still produced a usable handoff.
+8 cases ran as text chat in the dashboard and 2 ran by voice. each ran once tho, so a pass means it happened once, not that it always works.
 
-what didn't:
+what it got right: corrections got read back once, and only the new number was used after. every "can you just approve this" got the same answer and no number. calls people walked out of still made a usable handoff.
 
-- in 2 of 8 text runs the agent didn't end the call after its summary. both voice runs did.
-- a creator declined to share views. the agent handled it fine, but the post-call extraction didn't record the decline, so my "declined" flag never fired.
-- my one-question check failed on 5 of the 8 first runs. my own prompt asks "when can you start, and are there any dates you can't do?" as one question. i reworded the check and it passed on the re-run. then in voice, that exact question passed in one call and failed in the other. the judge isn't consistent, and the real fix is splitting the question in the prompt.
-- once, an unclear answer about dates was summarized as "nothing's missing". in the other run the same answer was listed as an open question.
+what it didn't:
 
-## voice, through a bot
+**ending the call.** in 2 of 8 text runs it gave the summary and then didn't hang up. both voice runs hung up fine.
 
-i wanted the agent inside a google meet. the plan: a playwright bot opens the meet in chrome, and a script injected into the page swaps meet's microphone for the agent's voice and streams everyone else's audio to the agent over elevenlabs' websocket. no virtual audio devices.
+**declines.** a creator wouldn't share views. the agent moved on like it should, but the extraction didn't record the decline, so my "declined" flag never fired.
 
-the first try failed at the door. meet refused a signed-out automated browser.
+**one question at a time.** this check failed on 5 of the 8 first runs. turns out my own prompt asks "when can you start, and are there any dates you can't do?" as one question. i reworded the check and it passed on the re-run. then in voice, that exact question passed in one call and failed in the other, so the judge isn't consistent either. the real fix is splitting the question in the prompt.
+
+**"nothing's missing".** once, an unclear answer about dates got summarized as nothing missing. in the other run the same answer was listed as an open question.
+
+## getting it into meet
+
+the bot is playwright driving chrome. a script injected into the meet page swaps meet's microphone for the agent's voice and sends everyone else's audio to the agent over elevenlabs' websocket. no virtual audio devices.
+
+**what was wrong.** meet won't let a signed-out automated browser in.
 
 ![meet: "you can't join this video call" | 480](images/voice-intake-meet-blocked.png)
 
-so i tested the audio bridge without google first. a local page connects two webrtc peers, plays a synthetic creator voice into one side, and measures the bot's outgoing audio on the other. the agent transcribed every spoken answer correctly, numbers included ("60,000", "600 US dollars", "November 10th"), and its own speech showed up on the bot's mic track.
+**the change.** test the audio without google first. a local page connects two webrtc peers, plays a synthetic creator voice into one side, and measures what comes out of the bot's mic on the other.
 
-![dashboard view of the voice run, with per-turn speech-to-text, llm and text-to-speech timings | 720](images/voice-intake-voice-run.jpg)
+**the outcome.** every spoken answer came back transcribed right, numbers included ("60,000", "600 US dollars", "November 10th"). the agent's speech showed up on the bot's mic track, peaking at 0.15 to 0.20 rms each turn.
 
-the second voice run tested interruption. the creator talks over the agent while it reads back the rate. elevenlabs cut the agent off mid-sentence, and its next turn used only the corrected number.
+![the voice run in the dashboard, with per-turn speech-to-text, llm and text-to-speech timings | 720](images/voice-intake-voice-run.jpg)
+
+the second voice run had the creator talk over the agent while it read back the rate. elevenlabs cut the agent off mid-sentence, and its next turn only used the corrected number.
 
 ![the agent's turn stored cut off at "six hundred US dollars per ..." | 720](images/voice-intake-interrupt.jpg)
 
-on the clean voice run the dashboard showed median timings of 74 ms for speech-to-text, 239 ms for the llm and 78 ms for text-to-speech. that isn't mouth-to-ear latency, and a synthetic voice in a quiet room is the easy case.
+timings on the clean run, medians from the dashboard: 74 ms speech-to-text, 239 ms llm, 78 ms text-to-speech. that's not mouth-to-ear, and a synthetic voice in a quiet room is the easy case.
 
-## then a real meet
+## a real meet
 
-today the bot got into a real google meet, signed into a google account. two things broke that the local room couldn't have shown me. the bot joined muted, so the agent was talking into nothing. and because the bot used the same google account as me, meet offered "switch here", which would have pulled my own call off my laptop. the bot now turns its mic on and joins with "join here too" instead.
+today the bot got into a real google meet, signed into a google account. two things broke that the local page couldn't have shown me.
 
-after that, the agent greeted the room and replied.
+**what was wrong.** the bot joined muted, so the agent was talking to no one. and since the bot was on my google account, meet offered "switch here", which would've pulled my own call off my laptop.
 
-![the meet conversation in the dashboard: the greeting, then a reply | 720](images/voice-intake-meet-conversation.jpg)
+**the change.** the bot turns its mic on before and after joining, and picks "join here too". it never clicks "switch here".
 
-that's 25 seconds. it shows the bridge works inside meet. it doesn't show a full intake there yet.
+**the outcome.** the agent greeted the room and answered. that's 25 seconds, so it shows the audio works inside meet. a full intake in there hasn't happened yet.
 
-## what's not done
+![the meet conversation in the dashboard, the greeting and one reply | 720](images/voice-intake-meet-conversation.jpg)
 
-- the agent booking the intro call. google calendar is connected, and only "check availability" and "create event" are attached, but i haven't run a booking. "book at most one call" and "only invite these people" live only in the prompt right now. they should be checked in code, the same way the pricing rules are.
-- a full intake in a real meet, with a real voice and background noise.
-- the manager-call half. i ran a synthetic call recording through elevenlabs' speech-to-text and merged it into the handoff, but not a real meet recording.
+## what's next
 
-next is the booking run, then one complete call in meet from start to finish.
+booking the intro call. google calendar is connected, with only "check availability" and "create event" attached, but i haven't run a booking. right now "one call max" and "only invite these people" live in the prompt, and they should be checked in code like the pricing is.
+
+after that, one full call in meet with a real voice, start to finish, and the manager's side of it. so far that side has only run on a synthetic recording through elevenlabs' speech-to-text. that's part 2.
