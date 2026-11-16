@@ -260,6 +260,13 @@ if (fs.existsSync(writeDir)) fs.cpSync(writeDir, path.join(OUT, 'write'), {
     filter: (src) => !src.endsWith('.md'),
 });
 
+// Winspeak support and privacy pages
+const winspeakDir = path.join(ROOT, 'winspeak');
+if (fs.existsSync(winspeakDir)) fs.cpSync(winspeakDir, path.join(OUT, 'winspeak'), {
+    recursive: true,
+    filter: (src) => !src.endsWith('.md'),
+});
+
 // post images
 const imagesDir = path.join(POSTS, 'images');
 if (fs.existsSync(imagesDir)) fs.cpSync(imagesDir, path.join(OUT, 'blog', 'images'), {
