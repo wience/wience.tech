@@ -81,7 +81,21 @@
 .aac--preview { --k-h: 100px; box-shadow: 0 24px 48px -24px rgb(0 0 0 / .45); }
 .aac--preview .aac__msg span + span::before { content: " "; }
 
-main > :is(section, .section), main > .hero { height: auto; min-height: calc(var(--h, 1) * 100svh); }
+main > :is(section, .section, .hero), footer.closing { height: auto !important; min-height: 0 !important; }
+main > section.g2 > .wrap { grid-template-rows: auto auto !important; row-gap: var(--s-7) !important; }
+@media (max-width: 639px) {
+  :root { --padt: 64px; --padb: 40px; }
+  main > :is(section, .section) { --bar: 0px; }
+  .board-shot { display: none; }
+  .aac--preview .aac__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .aac--preview .aac__key:nth-child(n + 9) { display: none; }
+  .aac--preview .aac__key span { font-size: 13px; }
+  .aac__key span { hyphens: manual; }
+}
+@media (min-width: 640px) { .hero--centred .hero__window > .ly-piece { width: min(880px, calc(100% - 112px)); } }
+@media (max-width: 639px) { .hero__window > .loop-pause { display: none; } }
+@media (max-width: 359px) { .aac--preview .aac__tool { display: none; } }
+@media (min-width: 640px) and (max-width: 1023px) { :root { --padt: 88px; --padb: 56px; } }
 .panel.shot { min-height: 0; flex: 0 0 auto; background: #f2f2f7; }
 .panel.shot > .frame__img { position: static; height: auto; }
 @media (min-width: 1024px) { #start .card--row > p { min-height: 3lh; } }
@@ -266,7 +280,7 @@ main > :is(section, .section), main > .hero { height: auto; min-height: calc(var
           <a class="btn btn--secondary" href="#try">Try the board</a>
         </div>
       </div>
-      <div class="hero__window" data-ly-steps="700" data-ly-hold="2200" role="img" aria-label="The app on iPad: the message bar reads I want juice above the drinks board">
+      <div class="hero__window" data-ui-pause-host data-ly-steps="700" data-ly-hold="2200" role="img" aria-label="The app on iPad: the message bar reads I want juice above the drinks board">
         <div class="ly-piece aac aac--preview" data-ui="" aria-hidden="true" inert>
           <div class="aac__top">
             <div class="aac__bar"><span class="aac__msg"><span data-step>I</span><span data-step>want</span><span data-step>juice</span></span><span class="aac__say"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" stroke="none"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg></span></div>
