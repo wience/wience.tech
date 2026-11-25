@@ -81,13 +81,25 @@
 .aac--preview { --k-h: 100px; box-shadow: 0 24px 48px -24px rgb(0 0 0 / .45); }
 .aac--preview .aac__msg span + span::before { content: " "; }
 
+main > :is(section, .section), main > .hero { height: auto; min-height: calc(var(--h, 1) * 100svh); }
+.panel.shot { min-height: 0; flex: 0 0 auto; background: #f2f2f7; }
+.panel.shot > .frame__img { position: static; height: auto; }
+@media (min-width: 1024px) { #start .card--row > p { min-height: 3lh; } }
+@media (max-width: 639px) { .panel.shot > .frame__img { width: 80%; margin-inline: auto; } }
+
+.hero--centred .hero__window { flex: none; min-height: 0; padding: var(--s-6) var(--s-6) 0; -webkit-mask-image: none; mask-image: none; }
+.hero--centred .hero__window > .ly-piece { position: relative; left: auto; top: auto; transform: none; width: min(880px, 100%); margin-inline: auto; }
+.aac--preview { border-radius: 18px 18px 0 0; }
+@media (max-width: 639px) { .hero--centred .hero__window { padding: var(--s-4) var(--s-4) 0; } .hero--centred .hero__window > .ly-piece { left: auto; width: 100%; } }
+
+
 .tablet { padding: 12px; border-radius: 30px; background: #1c1e22; box-shadow: 0 28px 56px -28px rgb(31 45 58 / .55); }
 .tablet > .aac { border-radius: 18px; }
 #try .aac { --k-h: 92px; }
 .try-notes { display: grid; gap: var(--s-3); margin: var(--s-5) 0 0; padding: 0; list-style: none; }
 
-.board-shot { position: relative; height: 420px; overflow: hidden; margin-top: var(--s-7); border-radius: var(--r-lg); border: 1px solid var(--line); background: #f5f5f7; }
-.board-shot img { display: block; width: 100%; height: auto; margin-top: -2.6%; }
+.board-shot { position: relative; overflow: hidden; margin-top: var(--s-7); border-radius: var(--r-lg); border: 1px solid var(--line); background: #f5f5f7; }
+.board-shot img { display: block; width: 100%; height: auto; }
 .figs { margin-top: var(--s-7); }
 .figs p + p { margin-top: var(--s-2); }
 
@@ -154,7 +166,6 @@
 @media (min-width: 1024px) and (max-width: 1279px) {
   #access .grid > .card, #start .grid > .card { grid-column: auto / span 4; }
   #access .panel, #start .panel { --p-h: 180px; }
-  .board-shot { height: 240px; }
   .modes { inset: 16px; gap: 8px; }
   .modes .k { font-size: 13px; padding: 4px; }
   .voice { min-height: 48px; padding-block: 4px; }
@@ -166,7 +177,6 @@
   #access .grid > .card, #start .grid > .card { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-auto-rows: min-content; column-gap: var(--s-6); align-content: start; }
   #access .grid > .card > :not(.panel), #start .grid > .card > :not(.panel) { grid-column: 1; }
   #access .grid > .card > .panel, #start .grid > .card > .panel { grid-column: 2; grid-row: 1 / span 4; --p-h: 200px; }
-  .board-shot { height: 260px; }
   .figs > .span-3 { grid-column: auto / span 6; }
   .art img { width: auto; max-height: 300px; }
   #price { --h: 2; }
@@ -191,7 +201,6 @@
   #try .aac, .aac--preview { --k-h: 66px; }
   .tablet { padding: 7px; border-radius: 20px; }
   .tablet > .aac { border-radius: 13px; }
-  .board-shot { height: 220px; }
   .voices-frame { grid-template-columns: minmax(0, 1fr); padding: var(--s-4); }
   .voices-frame .phone-shot { display: none; }
   .badge-link img { height: 52px; }
@@ -310,7 +319,7 @@
         <p class="span-7 start-6 t-lead">Core words like I, want, more and stop stay on the home board, and folders hold the rest. A keyboard with word completion covers anything missing, and Find shows the route to any word.</p>
       </div>
       <div class="board-shot">
-        <img src="assets/ipad-board-1600.webp" srcset="assets/ipad-board-800.webp 800w, assets/ipad-board-1600.webp 1600w" sizes="(max-width: 639px) 100vw, 1280px" width="1600" height="1112" loading="lazy" decoding="async" alt="The 70-word home board on iPad: core words coloured by word type, and folders for food, places, school, time and more.">
+        <img src="assets/ipad-board-full-1600.webp" srcset="assets/ipad-board-full-800.webp 800w, assets/ipad-board-full-1600.webp 1600w" sizes="(max-width: 639px) 100vw, 1280px" width="1600" height="1070" loading="lazy" decoding="async" alt="The 70-word home board on iPad: core words coloured by word type, and folders for food, places, school, time and more.">
       </div>
       <div class="grid figs" data-moment="counter-rolls">
         <div class="span-3"><p class="t-stat">1,900</p><p class="muted">words, each with a picture drawn for this app</p></div>
@@ -379,7 +388,7 @@
         <article class="card card--row card--open span-4">
           <h3>Hides every button but Home, Back and words</h3>
           <p>Little-hands mode, for very young children. On iPhone, a bigger-buttons choice puts 12 on a page, about 2&nbsp;cm each.</p>
-          <div class="panel"><img class="frame__img top" src="assets/phone-little.webp" width="660" height="1431" loading="lazy" decoding="async" alt="Little-hands mode on iPhone: large word buttons with only Home and Back above them."></div>
+          <div class="panel shot"><img class="frame__img top" src="assets/phone-little-rows.webp" width="660" height="744" loading="lazy" decoding="async" alt="Little-hands mode on iPhone: large word buttons with only Home and Back above them."></div>
         </article>
         <article class="card card--row card--open span-4">
           <h3>Scans the buttons with one or two switches</h3>
@@ -457,17 +466,17 @@
         <article class="card card--row card--open span-4">
           <h3>Tap the buttons as you say the words</h3>
           <p>Say “more juice” and tap it too. It's called modelling, and it's how people learn where words are. <a href="https://www.assistiveware.com/learn-aac/start-modeling">Read about modelling</a></p>
-          <div class="panel"><img class="frame__img top" src="assets/phone-sentence.webp" width="660" height="1431" loading="lazy" decoding="async" alt="The message bar reads I want juice above the drinks board on iPhone."></div>
+          <div class="panel shot"><img class="frame__img top" src="assets/phone-sentence-rows.webp" width="660" height="827" loading="lazy" decoding="async" alt="The message bar reads I want juice above the drinks board on iPhone."></div>
         </article>
         <article class="card card--row card--open span-4">
           <h3>Let them press everything</h3>
           <p>Tapping one button over and over is how people explore. Keep the device close and the sound on. <a href="https://www.assistiveware.com/learn-aac/repeated-button-tapping">Read why it helps</a></p>
-          <div class="panel"><img class="frame__img top" src="assets/phone-feelings.webp" width="660" height="1431" loading="lazy" decoding="async" alt="The feelings board on iPhone: feel, love, hate, like, cry, laugh, happy, sad and more."></div>
+          <div class="panel shot"><img class="frame__img top" src="assets/phone-feelings-rows.webp" width="660" height="827" loading="lazy" decoding="async" alt="The feelings board on iPhone: feel, love, hate, like, cry, laugh, happy, sad and more."></div>
         </article>
         <article class="card card--row card--open span-4">
           <h3>Start small and keep buttons in place</h3>
           <p>Pick a starting size, hide words for later and unhide them as they're ready. A word that stays put gets faster to find.</p>
-          <div class="panel"><img class="frame__img top" src="assets/phone-grid.webp" width="660" height="1431" loading="lazy" decoding="async" alt="Edit mode on iPhone, with controls for the number of rows and columns above the board."></div>
+          <div class="panel shot"><img class="frame__img top" src="assets/phone-grid-rows.webp" width="660" height="827" loading="lazy" decoding="async" alt="Edit mode on iPhone, with controls for the number of rows and columns above the board."></div>
         </article>
       </div>
     </div>
