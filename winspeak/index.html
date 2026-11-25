@@ -1,56 +1,549 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-type="software" data-radius="round" data-buttons="pill" data-ground="sky" data-motion>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Winzen's Talk Machine support</title>
-<meta name="description" content="Help for Talk Machine, the picture communication app for iPad.">
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Winzen's Talk Machine: an AAC app for iPad and iPhone</title>
+<meta name="description" content="Tap picture buttons to build a sentence and the iPad or iPhone says it out loud. About 1,900 words, English or Tagalog, works offline. US$19.99 once.">
+<meta name="apple-itunes-app" content="app-id=6835202531">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Winzen's Talk Machine: an AAC app for iPad and iPhone">
+<meta property="og:description" content="Tap pictures, hear the words. A picture communication app for iPad and iPhone, in English or Tagalog.">
+<meta property="og:image" content="https://wience.tech/winspeak/assets/og.png">
+<meta property="og:url" content="https://wience.tech/winspeak/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://wience.tech/winspeak/">
+<link rel="icon" type="image/png" href="assets/icon-96.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<meta name="theme-color" content="#fbf6ea">
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Reddit+Sans:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/ui/cards.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:"Times New Roman",Times,serif;font-size:16px;line-height:1.5;color:#000;background:#fff;padding:40px 20px;max-width:650px;margin:0 auto}
-h1{font-size:22px;margin-bottom:6px}
-h2{font-size:17px;margin:26px 0 6px}
-p,ul{margin-bottom:12px}
-ul{padding-left:22px}
-a{color:#000}
-.sub{color:#555;margin-bottom:22px}
+:root {
+  --p-bg: #fbf6ea; --p-surface: #efebe0; --p-ink: #1f2d3a; --p-muted: #5e686f;
+  --p-accent: #0a5c6d; --p-accent-ink: #fbf6ea; --p-action: #0a5c6d; --p-action-ink: #fbf6ea;
+  --p-inv-bg: #1f2d3a; --p-inv-surface: #2c3945; --p-inv-ink: #fbf6ea; --p-inv-muted: #a0a4a3;
+  --p-inv-accent: #fbf6ea; --p-inv-accent-ink: #1f2d3a; --p-inv-action: #fbf6ea; --p-inv-action-ink: #1f2d3a;
+  --font-display: "Reddit Sans", system-ui, sans-serif;
+  --font-text: "Reddit Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --display-weight: 500;
+  --display-tracking: -0.03em;
+  --display-tracking-xl: -0.04em;
+}
+</style>
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="assets/moments/moments.js">
+<link rel="modulepreload" href="assets/moments/lib.js">
+<link rel="modulepreload" href="assets/moments/counter-rolls/moment.js">
+<link rel="modulepreload" href="assets/moments/line-carries-colour/moment.js">
+<style>
+.aac { --k-gap: 10px; --k-r: 12px; --app-teal: #0a5c6d; --app-tool: #e2e5ea;
+  display: grid; gap: var(--k-gap); padding: 14px; background: #f5f5f7; color: #1f2d3a;
+  font-family: ui-rounded, "SF Pro Rounded", var(--font-text); border-radius: 20px; }
+.aac__top { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--k-gap); }
+.aac button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.aac__bar { display: flex; align-items: center; gap: 12px; min-height: 56px; min-width: 0; padding: 6px 6px 6px 16px;
+  border: 2px solid var(--app-teal); border-radius: 14px; background: #fff; text-align: left; }
+.aac__msg { flex: 1; min-width: 0; font-size: 24px; font-weight: 500; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aac__say { flex: none; display: grid; place-items: center; width: 52px; align-self: stretch; border-radius: 9px; background: var(--app-teal); color: #fff; }
+.aac__msg:empty + .aac__say { background: #9fb9c0; }
+.aac__say svg, .aac__tool svg, .aac__chip svg { width: 22px; height: 22px; }
+.aac__tool { display: grid; place-items: center; width: 60px; border: 0; border-radius: 14px; background: var(--app-tool); color: var(--app-teal); }
+.aac__nav { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.aac__chip { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border: 0; border-radius: 12px;
+  background: var(--app-tool); color: var(--app-teal); font-size: 15px; font-weight: 500; }
+.aac__chip:disabled { color: #6b7d86; cursor: default; }
+.aac__where { margin-left: 6px; font-size: 16px; font-weight: 500; }
+.aac__grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.aac__key, .aac__gap { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; justify-items: center; align-items: center;
+  min-width: 0; height: var(--k-h, 96px); padding: 6px 4px 5px; border: 1px solid rgb(31 45 58 / .16); border-radius: var(--k-r); background: var(--c, #f5f5f5); }
+.aac__gap { border: 0; background: none; }
+.aac__key img { width: auto; height: 100%; max-height: 64px; min-height: 0; aspect-ratio: 1; object-fit: contain; }
+.aac__key span { max-width: 100%; font-size: 15px; font-weight: 500; line-height: 1.15; text-align: center; hyphens: auto; overflow-wrap: break-word; }
+.aac__key--folder::after { content: ""; position: absolute; top: 5px; right: 5px; width: 16px; height: 13px; border-radius: 4px;
+  background: #3a4651 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 13'%3E%3Cpath d='M4 4h3l1 1h4v4H4z' fill='%23fff'/%3E%3C/svg%3E") center / 100% no-repeat; }
+.aac :is(.aac__key, .aac__bar, .aac__tool, .aac__chip) { transition: transform 120ms ease-out, filter 120ms ease-out; }
+.aac :is(.aac__key, .aac__bar, .aac__tool, .aac__chip:enabled):active { transform: scale(.96); filter: brightness(.94); }
+.aac :is(.aac__key, .aac__bar, .aac__tool, .aac__chip):focus-visible { outline: 3px solid var(--app-teal); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .aac :is(.aac__key, .aac__bar, .aac__tool, .aac__chip) { transition: none; } .aac :is(.aac__key, .aac__bar, .aac__tool, .aac__chip):active { transform: none; } }
+
+.hero--centred .hero__window { --ground-bg: #0a5c6d; }
+.hero--centred .hero__lead { color: var(--ink); }
+.aac--preview { --k-h: 100px; box-shadow: 0 24px 48px -24px rgb(0 0 0 / .45); }
+.aac--preview .aac__msg span + span::before { content: " "; }
+
+.tablet { padding: 12px; border-radius: 30px; background: #1c1e22; box-shadow: 0 28px 56px -28px rgb(31 45 58 / .55); }
+.tablet > .aac { border-radius: 18px; }
+#try .aac { --k-h: 92px; }
+.try-notes { display: grid; gap: var(--s-3); margin: var(--s-5) 0 0; padding: 0; list-style: none; }
+
+.board-shot { position: relative; height: 420px; overflow: hidden; margin-top: var(--s-7); border-radius: var(--r-lg); border: 1px solid var(--line); background: #f5f5f7; }
+.board-shot img { display: block; width: 100%; height: auto; margin-top: -2.6%; }
+.figs { margin-top: var(--s-7); }
+.figs p + p { margin-top: var(--s-2); }
+
+.art { display: grid; place-items: center; border-radius: var(--r-lg); background: #fff; overflow: hidden; }
+.art img { width: min(100%, 560px); height: auto; }
+.said { display: grid; gap: var(--s-6); margin-top: var(--s-6); }
+.said blockquote { margin: 0; font: var(--display-weight) var(--t-h3)/1.25 var(--font-display); letter-spacing: -0.01em; }
+.said figcaption { margin-top: var(--s-2); color: var(--muted); }
+.said figcaption a { color: var(--ink); }
+
+.voices-frame { display: grid; grid-template-columns: minmax(0, 1fr) 236px; gap: var(--s-5); align-items: start; padding: var(--s-5);
+  border-radius: var(--r-lg); background: var(--surface); }
+.voice-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.voice { display: grid; grid-template-columns: 40px minmax(0, 1fr); align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 8px 12px;
+  border: 1px solid var(--line); border-radius: 14px; background: #fff; color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+  transition: transform 120ms ease-out, border-color 120ms ease-out; }
+.voice:hover { border-color: var(--action); }
+.voice:active { transform: scale(.98); }
+.voice:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+.voice__play { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--action); color: var(--action-ink); }
+.voice__play svg { width: 16px; height: 16px; }
+.voice b { display: block; font-weight: 500; }
+.voice small { display: block; color: var(--muted); font-size: 14px; }
+.phone-shot { border: 8px solid #1c1e22; border-radius: 32px; overflow: hidden; background: #f2f2f7; }
+.phone-shot img { display: block; width: 100%; height: auto; }
+@media (prefers-reduced-motion: reduce) { .voice { transition: none; } .voice:active { transform: none; } }
+
+#access .panel, #start .panel { --p-h: 300px; }
+.panel > .frame__img.top { object-position: 50% 0; }
+.scan { position: absolute; inset: 24px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px; }
+.scan i { display: grid; place-items: center; border-radius: 10px; background: var(--c); border: 1px solid rgb(31 45 58 / .16); }
+.scan img { width: 52%; height: auto; }
+.scan__row { position: absolute; left: -6px; right: -6px; height: calc((100% - 16px) / 3 + 12px); top: -6px; border: 4px solid #0a5c6d; border-radius: 14px;
+  animation: scan-row var(--m-cycle) steps(1, end) infinite; }
+@keyframes scan-row { 0% { transform: translateY(0); } 33.3% { transform: translateY(calc(100% - 4px)); } 66.6% { transform: translateY(calc(200% - 8px)); } }
+.modes { position: absolute; inset: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; align-content: center; }
+.modes .k { display: grid; place-items: center; width: 100%; aspect-ratio: 1; border-radius: 12px; background: #fff; border: 1px solid rgb(31 45 58 / .16); font: 500 15px/1 ui-rounded, var(--font-text); gap: 4px; padding: 8px; }
+.modes .k img { width: 70%; height: auto; }
+.modes .k--fill { background: rgb(190, 220, 180); }
+.modes .k--border { border: 4px solid rgb(120, 170, 105); }
+.modes .k--dark { background: #111; color: #fff; border-color: #fff; }
+
+.card--plan .badge-link img { height: 48px; width: auto; }
+.price small { color: var(--muted); font-size: var(--t-body); }
+
+.limits { display: grid; gap: var(--s-3); margin: var(--s-4) 0 0; padding: 0; list-style: none; }
+.limits b { font-weight: 500; }
+.help-art { margin-top: var(--s-6); height: 260px; }
+.help-art img { width: auto; height: 100%; }
+.support { margin-top: var(--s-5); }
+.limits-head { margin-top: var(--s-8); font: 500 var(--t-card)/1.3 var(--font-text); letter-spacing: -0.01em; }
+
+/* the official App Store badge, never redrawn */
+.badge-link { display: inline-flex; border-radius: 9px; }
+.badge-link img { display: block; height: 56px; width: auto; }
+.badge-link:focus-visible { outline: 2px solid var(--action); outline-offset: 3px; }
+.btn-row .badge-link { align-self: center; }
+
+.close__word { line-height: 1.04; font-size: min(136px, calc((100vw - 2 * var(--gut)) / 9.4)); }
+.nav__logo { white-space: nowrap; }
+.nav__logo img { width: 32px; height: 32px; border-radius: 8px; margin-right: 10px; }
+
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  #access .grid > .card, #start .grid > .card { grid-column: auto / span 4; }
+  #access .panel, #start .panel { --p-h: 180px; }
+  .board-shot { height: 240px; }
+  .modes { inset: 16px; gap: 8px; }
+  .modes .k { font-size: 13px; padding: 4px; }
+  .voice { min-height: 48px; padding-block: 4px; }
+  .faq > .faq__item { padding-block: var(--s-3); }
+  .faq .faq__item > h3 { font-size: 18px; }
+}
+@media (min-width: 640px) and (max-width: 1279px) { .help-art { height: 150px; } }
+@media (min-width: 640px) and (max-width: 1023px) {
+  #access .grid > .card, #start .grid > .card { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-auto-rows: min-content; column-gap: var(--s-6); align-content: start; }
+  #access .grid > .card > :not(.panel), #start .grid > .card > :not(.panel) { grid-column: 1; }
+  #access .grid > .card > .panel, #start .grid > .card > .panel { grid-column: 2; grid-row: 1 / span 4; --p-h: 200px; }
+  .board-shot { height: 260px; }
+  .figs > .span-3 { grid-column: auto / span 6; }
+  .art img { width: auto; max-height: 300px; }
+  #price { --h: 2; }
+  .faq > .faq__item { padding-block: var(--s-4); }
+}
+@media (max-width: 1279px) { #try .aac { --k-h: 80px; } .aac__key img { max-height: 52px; } }
+@media (max-width: 1023px) {
+  .voices-frame { grid-template-columns: minmax(0, 1fr) 200px; }
+  #try .aac { --k-h: 84px; }
+}
+@media (max-width: 639px) {
+  .aac { --k-gap: 6px; padding: 8px; border-radius: 14px; }
+  .aac__bar { min-height: 44px; padding: 3px 3px 3px 10px; border-radius: 10px; }
+  .aac__msg { font-size: 17px; }
+  .aac__say { width: 40px; border-radius: 7px; }
+  .aac__tool { width: 44px; border-radius: 10px; }
+  .aac__chip { padding: 0 10px; font-size: 14px; border-radius: 10px; }
+  .aac__grid { gap: 6px; }
+  .aac__key { --k-r: 9px; padding: 4px 2px; }
+  .aac__key span { font-size: 11.5px; }
+  .aac__key--folder::after { width: 12px; height: 10px; top: 3px; right: 3px; }
+  #try .aac, .aac--preview { --k-h: 66px; }
+  .tablet { padding: 7px; border-radius: 20px; }
+  .tablet > .aac { border-radius: 13px; }
+  .board-shot { height: 220px; }
+  .voices-frame { grid-template-columns: minmax(0, 1fr); padding: var(--s-4); }
+  .voices-frame .phone-shot { display: none; }
+  .badge-link img { height: 52px; }
+  #access, #price, #start { --hm: 2; }
+  #access .panel { --p-h: 300px; }
+  #start .panel { --p-h: 272px; }
+  .help-art { height: 220px; }
+}
+@media (max-width: 359px) { .aac__key span { font-size: 10.5px; } .aac__tool { width: 40px; } .tablet { padding: 4px; } #try .aac { padding: 6px; } }
 </style>
 </head>
 <body>
-<h1>Winzen's Talk Machine support</h1>
-<p class="sub">Picture boards that speak, for iPad.</p>
+<!-- type: software (an AAC app for iPad and iPhone)
+     deal: hero centred, nav centre (nav-cards dealt; no photographs for its cards), close word, footer dark, rhythm space,
+           buttons pill, mark: the client's app icon, palette: the app's own colours (start.mjs brand), type reddit, radius round
+     moments: counter-rolls in #words (the real counts roll once), line-carries-colour in #speech (the ground turns for the speech question) -->
+<header class="nav nav--centre">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Skip to content</a>
+    <a class="nav__logo" href="#top"><img src="assets/icon-96.png" alt="" width="32" height="32">Winzen's Talk Machine</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item"><a class="nav__link" href="#try">Demo</a></div>
+      <div class="nav__item"><a class="nav__link" href="#words">Words</a></div>
+      <div class="nav__item"><a class="nav__link" href="#voices">Voices</a></div>
+      <div class="nav__item"><a class="nav__link" href="#price">Price</a></div>
+      <div class="nav__item">
+        <a class="nav__link" href="#help">Help <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3">
+              <p class="t-label">Before you buy</p>
+              <a href="#speech">AAC and speech<span>What the AAP and ASHA say</span></a>
+              <a href="#limits">What the app doesn't do<span>Limits to know before buying</span></a>
+              <a href="#help">Questions<span>Devices, editing, backups</span></a>
+            </div>
+            <div class="menu-col span-3">
+              <p class="t-label">After you buy</p>
+              <a href="#start">Getting started<span>Three habits to start with</span></a>
+              <a href="mailto:delafuentewince@gmail.com?subject=Winzen's%20Talk%20Machine">Email support<span>Answered within two working days</span></a>
+              <a href="press/">Press kit<span>Fact sheet and screenshots</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="https://apps.apple.com/app/id6835202531">Download on the App Store</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
 
-<p>Talk Machine gives a voice to people who can't rely on speech. Tap picture buttons to build a message, then tap the message bar and the iPad says it.</p>
+<main id="top">
+  <section class="hero hero--centred" data-enter aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text">
+      <div class="hero__c">
+        <h1 id="hero-h">An AAC app for iPad and iPhone</h1>
+        <p class="hero__lead">For children and adults who can't rely on speech. Tap pictures to build a sentence and the app says it out loud, in English or Tagalog. US$19.99 once.</p>
+        <div class="btn-row">
+          <a class="badge-link" href="https://apps.apple.com/app/id6835202531"><img src="assets/app-store-badge.svg" alt="Download on the App Store" width="168" height="56"></a>
+          <a class="btn btn--secondary" href="#try">Try the board</a>
+        </div>
+      </div>
+      <div class="hero__window" data-ly-steps="700" data-ly-hold="2200" role="img" aria-label="The app on iPad: the message bar reads I want juice above the drinks board">
+        <div class="ly-piece aac aac--preview" data-ui="" aria-hidden="true" inert>
+          <div class="aac__top">
+            <div class="aac__bar"><span class="aac__msg"><span data-step>I</span><span data-step>want</span><span data-step>juice</span></span><span class="aac__say"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" stroke="none"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg></span></div>
+            <span class="aac__tool"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h10.5a1.5 1.5 0 0 1 1.5 1.5v11a1.5 1.5 0 0 1-1.5 1.5H9l-6-7z" fill="currentColor" stroke="none"/><path d="M11.5 9.5l5 5m0-5l-5 5" stroke="#e2e5ea"/></svg></span>
+            <span class="aac__tool"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" fill="currentColor" stroke="none"/><path d="M9 9l6 6m0-6l-6 6" stroke="#e2e5ea"/></svg></span>
+          </div>
+          <div class="aac__nav"><span class="aac__chip"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 4.5l8 7V20h-5.5v-5h-5v5H4z"/></svg>Home</span><span class="aac__chip"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m6-6l-6 6 6 6"/></svg>Back</span><span class="aac__where">Drinks</span></div>
+          <div class="aac__grid"><span class="aac__key" style="--c:rgb(190, 220, 180)"><img src="assets/demo/s/drink.webp" alt="" width="160" height="160"><span>drink</span></span><span class="aac__key" style="--c:rgb(185, 208, 235)"><img src="assets/demo/s/thirsty.webp" alt="" width="160" height="160"><span>thirsty</span></span><span class="aac__key" style="--c:rgb(245, 208, 170)"><img src="assets/demo/s/water.webp" alt="" width="160" height="160"><span>water</span></span><span class="aac__key" style="--c:rgb(245, 208, 170)"><img src="assets/demo/s/milk.webp" alt="" width="160" height="160"><span>milk</span></span><span class="aac__key" style="--c:rgb(245, 208, 170)"><img src="assets/demo/s/juice.webp" alt="" width="160" height="160"><span>juice</span></span><span class="aac__key" style="--c:rgb(245, 208, 170)"><img src="assets/demo/s/orange-juice.webp" alt="" width="160" height="160"><span>orange juice</span></span><span class="aac__key" style="--c:rgb(245, 208, 170)"><img src="assets/demo/s/apple-juice.webp" alt="" width="160" height="160"><span>apple juice</span></span><span class="aac__key" style="--c:rgb(245, 208, 170)"><img src="assets/demo/s/tea.webp" alt="" width="160" height="160"><span>tea</span></span><span class="aac__key" style="--c:rgb(245, 208, 170)"><img src="assets/demo/s/coffee.webp" alt="" width="160" height="160"><span>coffee</span></span><span class="aac__key" style="--c:rgb(245, 208, 170)"><img src="assets/demo/s/hot-chocolate.webp" alt="" width="160" height="160"><span>hot chocolate</span></span></div>
+        </div>
+      </div>
+    </div></div>
+  </section>
 
-<h2>Get help</h2>
-<p>Email <a href="mailto:delafuentewince@gmail.com?subject=Talk%20Machine">delafuentewince@gmail.com</a>. Say which iPad you have and what you were doing, and attach a screenshot if you can. I answer within two working days.</p>
+  <section class="section" id="try" aria-labelledby="try-h">
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-5">
+          <h2 id="try-h">Try the 20-word home board</h2>
+          <p class="t-lead" style="margin-top: var(--s-5)">The pictures and the voice, Teddy, are the app's own. Tap words to build a sentence, then tap the message bar to hear it.</p>
+          <ul class="try-notes">
+            <li>Folders open boards of their own: phrases, food, drinks, feelings, people and play.</li>
+            <li>Sound plays only when you tap.</li>
+          </ul>
+        </div>
+        <div class="span-7 start-6">
+          <div class="tablet">
+            <div class="aac" data-ui="" data-aac-live>
+              <div class="aac__top">
+                <button class="aac__bar" type="button" aria-label="Message bar, empty"><span class="aac__msg" aria-live="polite"></span><span class="aac__say" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" stroke="none"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></svg></span></button>
+                <button class="aac__tool" type="button" data-aac="delete" aria-label="Delete the last word"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h10.5a1.5 1.5 0 0 1 1.5 1.5v11a1.5 1.5 0 0 1-1.5 1.5H9l-6-7z" fill="currentColor" stroke="none"/><path d="M11.5 9.5l5 5m0-5l-5 5" stroke="#e2e5ea"/></svg></button>
+                <button class="aac__tool" type="button" data-aac="clear" aria-label="Clear the message"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" fill="currentColor" stroke="none"/><path d="M9 9l6 6m0-6l-6 6" stroke="#e2e5ea"/></svg></button>
+              </div>
+              <div class="aac__nav">
+                <button class="aac__chip" type="button" data-aac="home" disabled><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 4.5l8 7V20h-5.5v-5h-5v5H4z"/></svg>Home</button>
+                <button class="aac__chip" type="button" data-aac="back" disabled><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m6-6l-6 6 6 6"/></svg>Back</button>
+                <span class="aac__where" aria-live="polite">Home</span>
+              </div>
+              <div class="aac__grid" role="group" aria-label="Home board"><button type="button" class="aac__key" style="--c:rgb(246, 232, 170)" data-clip="49"><img src="assets/demo/s/i-me.webp" alt="" width="160" height="160" loading="lazy"><span>I</span></button><button type="button" class="aac__key" style="--c:rgb(190, 220, 180)" data-clip="77616e74"><img src="assets/demo/s/want.webp" alt="" width="160" height="160" loading="lazy"><span>want</span></button><button type="button" class="aac__key" style="--c:rgb(185, 208, 235)" data-clip="6d6f7265"><img src="assets/demo/s/more.webp" alt="" width="160" height="160" loading="lazy"><span>more</span></button><button type="button" class="aac__key" style="--c:rgb(190, 220, 180)" data-clip="73746f70"><img src="assets/demo/s/stop.webp" alt="" width="160" height="160" loading="lazy"><span>stop</span></button><button type="button" class="aac__key" style="--c:rgb(190, 220, 180)" data-clip="68656c70"><img src="assets/demo/s/help.webp" alt="" width="160" height="160" loading="lazy"><span>help</span></button><button type="button" class="aac__key" style="--c:rgb(246, 232, 170)" data-clip="796f75"><img src="assets/demo/s/you.webp" alt="" width="160" height="160" loading="lazy"><span>you</span></button><button type="button" class="aac__key" style="--c:rgb(190, 220, 180)" data-clip="676f"><img src="assets/demo/s/go.webp" alt="" width="160" height="160" loading="lazy"><span>go</span></button><button type="button" class="aac__key" style="--c:rgb(190, 220, 180)" data-clip="6c696b65"><img src="assets/demo/s/like.webp" alt="" width="160" height="160" loading="lazy"><span>like</span></button><button type="button" class="aac__key" style="--c:rgb(245, 245, 245)" data-clip="6e6f74"><img src="assets/demo/s/not.webp" alt="" width="160" height="160" loading="lazy"><span>not</span></button><button type="button" class="aac__key" style="--c:rgb(185, 208, 235)" data-clip="66696e6973686564"><img src="assets/demo/s/finished.webp" alt="" width="160" height="160" loading="lazy"><span>finished</span></button><button type="button" class="aac__key" style="--c:rgb(240, 205, 218)" data-clip="796573"><img src="assets/demo/s/yes.webp" alt="" width="160" height="160" loading="lazy"><span>yes</span></button><button type="button" class="aac__key" style="--c:rgb(240, 205, 218)" data-clip="6e6f"><img src="assets/demo/s/no.webp" alt="" width="160" height="160" loading="lazy"><span>no</span></button><button type="button" class="aac__key" style="--c:rgb(215, 200, 232)" data-clip="77686174"><img src="assets/demo/s/what.webp" alt="" width="160" height="160" loading="lazy"><span>what</span></button><button type="button" class="aac__key" style="--c:rgb(190, 220, 180)" data-clip="6c6f7665"><img src="assets/demo/s/love.webp" alt="" width="160" height="160" loading="lazy"><span>love</span></button><button type="button" class="aac__key aac__key--folder" style="--c:rgb(215, 220, 228)" data-open="phrases"><img src="assets/demo/s/talk.webp" alt="" width="160" height="160" loading="lazy"><span>Phrases</span><span class="sr-only">, opens a board</span></button><button type="button" class="aac__key aac__key--folder" style="--c:rgb(215, 220, 228)" data-open="food"><img src="assets/demo/s/food.webp" alt="" width="160" height="160" loading="lazy"><span>Food</span><span class="sr-only">, opens a board</span></button><button type="button" class="aac__key aac__key--folder" style="--c:rgb(215, 220, 228)" data-open="drinks"><img src="assets/demo/s/drinks.webp" alt="" width="160" height="160" loading="lazy"><span>Drinks</span><span class="sr-only">, opens a board</span></button><button type="button" class="aac__key aac__key--folder" style="--c:rgb(215, 220, 228)" data-open="feelings"><img src="assets/demo/s/feelings.webp" alt="" width="160" height="160" loading="lazy"><span>Feelings</span><span class="sr-only">, opens a board</span></button><button type="button" class="aac__key aac__key--folder" style="--c:rgb(215, 220, 228)" data-open="people"><img src="assets/demo/s/people.webp" alt="" width="160" height="160" loading="lazy"><span>People</span><span class="sr-only">, opens a board</span></button><button type="button" class="aac__key aac__key--folder" style="--c:rgb(215, 220, 228)" data-open="play"><img src="assets/demo/s/play.webp" alt="" width="160" height="160" loading="lazy"><span>Play</span><span class="sr-only">, opens a board</span></button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<h2>Common questions</h2>
+  <section class="section" id="words" aria-labelledby="words-h">
+    <div class="wrap">
+      <div class="grid">
+        <h2 id="words-h" class="span-5">About 1,900 words on 51 boards</h2>
+        <p class="span-7 start-6 t-lead">Core words like I, want, more and stop stay on the home board, and folders hold the rest. A keyboard with word completion covers anything missing, and Find shows the route to any word.</p>
+      </div>
+      <div class="board-shot">
+        <img src="assets/ipad-board-1600.webp" srcset="assets/ipad-board-800.webp 800w, assets/ipad-board-1600.webp 1600w" sizes="(max-width: 639px) 100vw, 1280px" width="1600" height="1112" loading="lazy" decoding="async" alt="The 70-word home board on iPad: core words coloured by word type, and folders for food, places, school, time and more.">
+      </div>
+      <div class="grid figs" data-moment="counter-rolls">
+        <div class="span-3"><p class="t-stat">1,900</p><p class="muted">words, each with a picture drawn for this app</p></div>
+        <div class="span-3"><p class="t-stat">51</p><p class="muted">boards, opened from folders on the home board</p></div>
+        <div class="span-3"><p class="t-stat">3</p><p class="muted">starting sizes: 20, 42 or 70 words</p></div>
+        <div class="span-3"><p class="t-stat">5</p><p class="muted">word endings in English: -s, -ing, -ed, -er, -est</p></div>
+      </div>
+    </div>
+  </section>
 
-<p><strong>How do I change the buttons?</strong><br>
-Press and hold "Hold to edit" on the home screen. In edit mode you can change the rows and columns, tap a button to change its word, picture or colour, and add new words.</p>
+  <section class="section ground-inverse" id="speech" aria-labelledby="speech-h" data-moment="line-carries-colour" data-moment-opts='{"from": "base"}'>
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-5">
+          <h2 id="speech-h">AAC and learning to talk</h2>
+          <p class="t-lead" style="margin-top: var(--s-5)">Most parents ask whether a talking app will stop their child from speaking. The people who study this say no.</p>
+          <div class="said">
+            <figure>
+              <blockquote>“AAC does NOT prevent or reduce verbal speech.”</blockquote>
+              <figcaption>American Academy of Pediatrics, <a href="https://www.healthychildren.org/English/health-issues/conditions/developmental-disabilities/Pages/augmentative-and-alternative-communication-for-children.aspx">HealthyChildren.org</a></figcaption>
+            </figure>
+            <figure>
+              <blockquote>“There is no ‘too young’ of an age for AAC.”</blockquote>
+              <figcaption>American Speech-Language-Hearing Association, <a href="https://www.asha.org/practice/early-intervention-provider-support/augmentative-and-alternative-communication-in-early-intervention">ASHA</a></figcaption>
+            </figure>
+          </div>
+          <p style="margin-top: var(--s-6)">Both are about AAC in general. The app is a communication tool and doesn't replace a speech-language pathologist. If you can see one, ask them to help you set it up.</p>
+        </div>
+        <div class="span-7 start-6 art">
+          <img src="assets/hero1.webp" srcset="assets/hero1-450.webp 450w, assets/hero1.webp 900w" sizes="(max-width: 639px) 342px, 560px" width="900" height="900" loading="lazy" decoding="async" alt="A boy taps a tablet and a heart appears in a speech bubble. His mother puts a hand on her chest and smiles.">
+        </div>
+      </div>
+    </div>
+  </section>
 
-<p><strong>The buttons are too small or too many.</strong><br>
-In edit mode, lower the rows and columns at the top of the board. Words that no longer fit move to a "Next page" button. Nothing is deleted.</p>
+  <section class="section" id="voices" aria-labelledby="voices-h">
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-5">
+          <h2 id="voices-h">Seven recorded voices, in English or Tagalog</h2>
+          <p style="margin-top: var(--s-5)">Six English voices, including child voices, read the built-in words, and Ate Jen reads them in Tagalog. Every voice on the device works too, including Personal Voice, and you can record your own on any button. Photo scenes put see-through buttons over a real photo of a room, a meal or a toy shelf.</p>
+          <p style="margin-top: var(--s-4)">Switch to Tagalog and the words and voice change together, with every button in place. Little words (ang, ng, sa, na, si, ko, mo) replace the endings, and words families say in English, like juice, stay English.</p>
+        </div>
+        <div class="span-7 start-6 voices-frame" data-ui="">
+          <ul class="voice-list" aria-label="Hear each voice">
+            <li><button class="voice" type="button" data-voice="candy"><span class="voice__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8z" fill="currentColor"/></svg></span><span><b>Candy</b><small>younger girl, says “hello”</small></span></button></li>
+            <li><button class="voice" type="button" data-voice="emma"><span class="voice__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8z" fill="currentColor"/></svg></span><span><b>Emma</b><small>girl, says “hello”</small></span></button></li>
+            <li><button class="voice" type="button" data-voice="jessica"><span class="voice__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8z" fill="currentColor"/></svg></span><span><b>Jessica</b><small>young woman, says “hello”</small></span></button></li>
+            <li><button class="voice" type="button" data-voice="ryan"><span class="voice__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8z" fill="currentColor"/></svg></span><span><b>Ryan</b><small>boy, says “hello”</small></span></button></li>
+            <li><button class="voice" type="button" data-voice="teddy"><span class="voice__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8z" fill="currentColor"/></svg></span><span><b>Teddy</b><small>younger boy, says “hello”</small></span></button></li>
+            <li><button class="voice" type="button" data-voice="will"><span class="voice__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8z" fill="currentColor"/></svg></span><span><b>Will</b><small>young man, says “hello”</small></span></button></li>
+            <li><button class="voice" type="button" data-voice="tl-jen"><span class="voice__play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8z" fill="currentColor"/></svg></span><span><b>Ate Jen</b><small>Tagalog, says “kumusta”</small></span></button></li>
+          </ul>
+          <div class="phone-shot"><img src="assets/phone-tagalog-470.webp" width="470" height="1019" loading="lazy" decoding="async" alt="The food board in Tagalog, with the little words ang, ng, sa, na, si, ko and mo under the message bar."></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<p><strong>How do I add my own picture or voice?</strong><br>
-In edit mode, tap a button. You can choose a picture from the built-in set, take a photo, pick one from your photos, or record your own voice for that button.</p>
+  <section class="section" id="access" aria-labelledby="access-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="access-h">Big buttons, switch scanning and high contrast</h2>
+      </div>
+      <div class="grid">
+        <article class="card card--row card--open span-4">
+          <h3>Hides every button but Home, Back and words</h3>
+          <p>Little-hands mode, for very young children. On iPhone, a bigger-buttons choice puts 12 on a page, about 2&nbsp;cm each.</p>
+          <div class="panel"><img class="frame__img top" src="assets/phone-little.webp" width="660" height="1431" loading="lazy" decoding="async" alt="Little-hands mode on iPhone: large word buttons with only Home and Back above them."></div>
+        </article>
+        <article class="card card--row card--open span-4">
+          <h3>Scans the buttons with one or two switches</h3>
+          <p>Automatic or step scanning. Set a hold time before a tap counts, and a pause after each tap.</p>
+          <div class="panel" data-m-loop role="img" aria-label="Switch scanning: a frame steps from row to row of word buttons">
+            <div class="scan" data-ui="" aria-hidden="true"><i style="--c:rgb(246, 232, 170)"><img src="assets/demo/s/i-me.webp" alt="" width="160" height="160" loading="lazy"></i><i style="--c:rgb(190, 220, 180)"><img src="assets/demo/s/want.webp" alt="" width="160" height="160" loading="lazy"></i><i style="--c:rgb(185, 208, 235)"><img src="assets/demo/s/more.webp" alt="" width="160" height="160" loading="lazy"></i><i style="--c:rgb(246, 232, 170)"><img src="assets/demo/s/you.webp" alt="" width="160" height="160" loading="lazy"></i><i style="--c:rgb(190, 220, 180)"><img src="assets/demo/s/go.webp" alt="" width="160" height="160" loading="lazy"></i><i style="--c:rgb(190, 220, 180)"><img src="assets/demo/s/like.webp" alt="" width="160" height="160" loading="lazy"></i><i style="--c:rgb(240, 205, 218)"><img src="assets/demo/s/yes.webp" alt="" width="160" height="160" loading="lazy"></i><i style="--c:rgb(240, 205, 218)"><img src="assets/demo/s/no.webp" alt="" width="160" height="160" loading="lazy"></i><i style="--c:rgb(190, 220, 180)"><img src="assets/demo/s/stop.webp" alt="" width="160" height="160" loading="lazy"></i><span class="scan__row"></span></div>
+          </div>
+        </article>
+        <article class="card card--row card--open span-4">
+          <h3>Colours buttons by word type, or not</h3>
+          <p>Colour as a fill, a border or off. A dark high-contrast theme is one switch, and motion stops with Reduce Motion.</p>
+          <div class="panel" role="img" aria-label="The word want shown with a green fill, a green border, and in the dark high-contrast theme">
+            <div class="modes" data-ui="" aria-hidden="true">
+              <span class="k k--fill"><img src="assets/demo/s/want.webp" alt="" width="160" height="160" loading="lazy">want</span>
+              <span class="k k--border"><img src="assets/demo/s/want.webp" alt="" width="160" height="160" loading="lazy">want</span>
+              <span class="k k--dark"><img src="assets/demo/s/want.webp" alt="" width="160" height="160" loading="lazy">want</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
 
-<p><strong>Can I stop someone from changing the boards?</strong><br>
-Yes. Settings has an edit lock with an optional passcode.</p>
+  <section class="section" id="price" aria-labelledby="price-h">
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-4">
+          <h2 id="price-h">One price for iPad and iPhone</h2>
+          <p style="margin-top: var(--s-5)">No subscription, no in-app purchases, no account and no ads. Every copy:</p>
+          <ul class="limits">
+            <li>Works offline</li>
+            <li>Collects no data and runs no analytics</li>
+            <li>Backs up boards on its own</li>
+            <li>Exports boards in Open Board Format (.obf, .obz)</li>
+            <li>Locks editing, with an optional passcode</li>
+          </ul>
+        </div>
+        <article class="card card--plan is-featured span-4 start-5">
+          <h3>Families</h3>
+          <p class="price"><span class="t-stat">US$19.99</span><small>once</small></p>
+          <p>₱999 in the Philippines. Needs iOS 17 or later.</p>
+          <a class="badge-link" href="https://apps.apple.com/app/id6835202531"><img src="assets/app-store-badge.svg" alt="Download on the App Store" width="144" height="48" loading="lazy"></a>
+        </article>
+        <article class="card card--plan span-4 start-9">
+          <h3>Therapists and teachers</h3>
+          <p class="muted">Speech-language pathologists, special education teachers and parent groups</p>
+          <p class="price"><span class="t-stat">Free</span><small>with a code</small></p>
+          <p>Try it with the people you work with and tell Wince what's missing.</p>
+          <a class="btn btn--secondary" href="mailto:delafuentewince@gmail.com?subject=Free%20code%20for%20Winzen's%20Talk%20Machine">Email for a free code</a>
+        </article>
+      </div>
+      <h3 id="limits" class="limits-head">What the app doesn't do</h3>
+      <div class="grid">
+        <ul class="limits span-5">
+          <li><b>iPad and iPhone only.</b> There's no Android version.</li>
+          <li><b>No free trial.</b> Apple handles refunds at <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>.</li>
+          <li><b>English and Tagalog only.</b> Word endings work in English.</li>
+        </ul>
+        <ul class="limits span-7 start-6">
+          <li><b>No eye tracking or head tracking.</b> Access is by touch or by switch.</li>
+          <li><b>No syncing between devices.</b> Move boards with a backup file.</li>
+          <li><b>It isn't therapy.</b> It doesn't diagnose or treat anything, and it doesn't replace an assessment.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-<p><strong>How do I move my boards to another iPad?</strong><br>
-Settings can export a backup file (.obz). Send that file to the other iPad and import it in Settings there. Talk Machine also keeps automatic backups on the iPad.</p>
+  <section class="section" id="start" aria-labelledby="start-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="start-h">Getting started at home in 3 steps</h2>
+        <p>Not everyone can get an appointment. These are what AAC specialists tell families first.</p>
+      </div>
+      <div class="grid">
+        <article class="card card--row card--open span-4">
+          <h3>Tap the buttons as you say the words</h3>
+          <p>Say “more juice” and tap it too. It's called modelling, and it's how people learn where words are. <a href="https://www.assistiveware.com/learn-aac/start-modeling">Read about modelling</a></p>
+          <div class="panel"><img class="frame__img top" src="assets/phone-sentence.webp" width="660" height="1431" loading="lazy" decoding="async" alt="The message bar reads I want juice above the drinks board on iPhone."></div>
+        </article>
+        <article class="card card--row card--open span-4">
+          <h3>Let them press everything</h3>
+          <p>Tapping one button over and over is how people explore. Keep the device close and the sound on. <a href="https://www.assistiveware.com/learn-aac/repeated-button-tapping">Read why it helps</a></p>
+          <div class="panel"><img class="frame__img top" src="assets/phone-feelings.webp" width="660" height="1431" loading="lazy" decoding="async" alt="The feelings board on iPhone: feel, love, hate, like, cry, laugh, happy, sad and more."></div>
+        </article>
+        <article class="card card--row card--open span-4">
+          <h3>Start small and keep buttons in place</h3>
+          <p>Pick a starting size, hide words for later and unhide them as they're ready. A word that stays put gets faster to find.</p>
+          <div class="panel"><img class="frame__img top" src="assets/phone-grid.webp" width="660" height="1431" loading="lazy" decoding="async" alt="Edit mode on iPhone, with controls for the number of rows and columns above the board."></div>
+        </article>
+      </div>
+    </div>
+  </section>
 
-<p><strong>The voice sounds wrong for a word.</strong><br>
-Settings has custom pronunciations, and you can change the voice, speed and pitch.</p>
+  <section class="section g2" id="help" aria-labelledby="help-h">
+    <div class="wrap">
+      <div class="group">
+        <div class="grid">
+          <div class="span-5">
+            <h2 id="help-h">Questions</h2>
+            <p class="t-lead" style="margin-top: var(--s-4)">The ones families and therapists ask most.</p>
+            <p class="support">Still stuck? Email <a href="mailto:delafuentewince@gmail.com?subject=Winzen's%20Talk%20Machine">delafuentewince@gmail.com</a>. Say which device you have and what you were doing, and attach a screenshot if you can. Answered within two working days.</p>
+            <p style="margin-top: var(--s-5)"><a class="btn btn--secondary" href="mailto:delafuentewince@gmail.com?subject=Winzen's%20Talk%20Machine">Email support</a></p>
+            <div class="art help-art"><img src="assets/hero2.webp" srcset="assets/hero2-450.webp 450w, assets/hero2.webp 900w" sizes="260px" width="900" height="900" loading="lazy" decoding="async" alt="A boy holds up a tablet of picture buttons, and a glass of juice appears in a speech bubble."></div>
+          </div>
+          <div class="faq span-7 start-6">
+            <div class="faq__item"><h3>Which devices does it run on?</h3><p>iPad and iPhone with iOS 17 or later. One purchase covers both. A dedicated device works best, so games don't compete with it, but a shared one is fine to start.</p></div>
+            <div class="faq__item"><h3>How do I change the buttons?</h3><p>Press and hold the lock at the right of the toolbar for two seconds. In edit mode you can change the rows and columns, tap a button to change its word, picture or colour, and add new words.</p></div>
+            <div class="faq__item"><h3>The buttons are too small, or there are too many.</h3><p>In edit mode, lower the rows and columns at the top of the board. Words that no longer fit move to a Next page button. Nothing is deleted. On iPhone, Settings &gt; Change vocabulary size also has a Bigger buttons switch.</p></div>
+            <div class="faq__item"><h3>Do the buttons move around?</h3><p>Not when you hide words or switch language: every button stays exactly where it was. Resizing the grid keeps the words in the same reading order, but they shift to fit the new rows and columns. Changing the starting size (20, 42 or 70) replaces the boards with a different layout, so do that before you customise.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="faq span-5">
+            <div class="faq__item"><h3>How do I add my own picture or voice?</h3><p>In edit mode, tap a button. You can choose a picture from the built-in set, take a photo, pick one from your photos, or record your own voice for that button.</p></div>
+            <div class="faq__item"><h3>How do I switch to Tagalog?</h3><p>Open Settings and choose Tagalog under “Language of the words”. The starter words and the voice change, and every button stays in the same place. Words you added yourself stay as you typed them.</p></div>
+            <div class="faq__item"><h3>Can I stop someone from changing the boards?</h3><p>Yes. Settings has an edit lock with an optional passcode. Write the passcode down: if it's forgotten, the only way back in is to delete the app.</p></div>
+        </div>
+        <div class="faq span-7 start-6">
+            <div class="faq__item"><h3>How do I back up or move my boards?</h3><p>The app keeps automatic backups on the device. Settings can also export a backup file (.obz). Send that file to another device and import it in Settings there.</p></div>
+            <div class="faq__item"><h3>What if you stop updating the app?</h3><p>It keeps working, because it needs no server and no account. Your boards export in Open Board Format, an open standard that other AAC apps can import, so you can take them with you.</p></div>
+            <div class="faq__item"><h3>The voice says a word wrong.</h3><p>Settings has custom pronunciations, and you can change the voice, speed and pitch.</p></div>
+            <div class="faq__item"><h3>Can I get a refund?</h3><p>Purchases go through Apple, and Apple handles refunds at <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
-<p><strong>Does it need the internet?</strong><br>
-No. Talk Machine works offline and needs no account.</p>
+<footer class="footer closing footer--dark ground-inverse" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--word">
+      <div class="section-head--split">
+        <div><h2 id="close-h">Give them a way to say it</h2><p class="t-lead">For iPad and iPhone, in English or Tagalog. US$19.99 once, ₱999 in the Philippines.</p></div>
+        <a class="badge-link" href="https://apps.apple.com/app/id6835202531"><img src="assets/app-store-badge.svg" alt="Download on the App Store" width="168" height="56" loading="lazy"></a>
+      </div>
+      <p class="close__word" aria-hidden="true">Winzen's Talk Machine</p>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="#top"><img src="assets/icon-96.png" alt="" width="32" height="32" loading="lazy">Winzen's Talk Machine</a>
+          <p class="footer__lede">Made by Wince Dela Fuente for Winzen, the developer's brother, with input from the people who work with him every day.</p>
+        </div>
+        <div class="span-2 start-7 footer__col"><h3>App</h3><ul><li><a href="#try">Demo</a></li><li><a href="#words">Words</a></li><li><a href="#voices">Voices</a></li><li><a href="#access">Access</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Help</h3><ul><li><a href="#start">Getting started</a></li><li><a href="#help">Questions</a></li><li><a href="#price">Price</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Contact</h3><ul><li><a href="mailto:delafuentewince@gmail.com?subject=Winzen's%20Talk%20Machine">Email support</a></li><li><a href="press/">Press kit</a></li><li><a href="privacy/">Privacy policy</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 <a href="/">Wince Dela Fuente</a></span>
+        <a href="privacy/">Privacy</a>
+        <span>The home board uses the Universal Core vocabulary from <a href="https://project-core.com/">Project Core</a> (CC BY 4.0).</span>
+      </div>
+    </div>
+  </div>
+</footer>
 
-<h2>Privacy</h2>
-<p>Talk Machine collects no data. Read the <a href="/winspeak/privacy/">privacy policy</a>.</p>
+<nav class="actionbar" aria-label="Quick actions">
+  <a class="btn btn--primary" href="https://apps.apple.com/app/id6835202531">Download on the App Store</a>
+</nav>
 
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module" src="assets/layout/layout.js"></script>
+<script type="module" src="assets/demo/demo.js"></script>
 </body>
 </html>
